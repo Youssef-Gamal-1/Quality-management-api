@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('standards', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->foreignIdFor(\App\Models\Program::class)->constrained()
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
