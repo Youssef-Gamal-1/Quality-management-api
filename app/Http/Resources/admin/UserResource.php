@@ -48,8 +48,6 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'phone' => $this->phone,
             'role' => empty($role) ? 'user' : implode(' | ', $role),
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

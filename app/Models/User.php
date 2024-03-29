@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -57,8 +59,26 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class,'program_user');
     }
 
-    public function permissions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function scopeFilter(Builder | QueryBuilder $query, array $filters)
     {
-        return $this->hasMany(Permission::class);
+        return $query->when(
+            $filters['search'] ?? null,
+            function($query,$search) {
+                $query->where(
+                    fn($q) => $q->where('name','like','%'. $search .'%')
+                                ->orWhere('academic_email','like','%'. $search . '%')
+                                ->orWhere('email','like','%'. $search . '%')
+                                ->orWhere('username','like','%'. $search . '%')
+                );
+            }
+        )->when(
+            $filters['role'] ?? null,
+            function($query,$role) {
+                $roles = explode(',',$role);
+                foreach($roles as $role):
+                    $query->where($role,1);
+                endforeach;
+            }
+        );
     }
 }

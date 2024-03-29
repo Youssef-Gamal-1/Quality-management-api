@@ -15,9 +15,19 @@ class Connect
      */
     public function handle(Request $request, Closure $next): Response
     {
-        return $next($request)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        $response = $next($request);
+
+        // Add CORS headers to all responses
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+        // Handle preflight OPTIONS requests
+        if ($request->getMethod() === 'OPTIONS') {
+            $response->headers->set('Access-Control-Allow-Headers', $request->header('Access-Control-Request-Headers'));
+            return $response;
+        }
+
+        return $response;
     }
 }

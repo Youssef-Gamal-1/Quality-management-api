@@ -14,7 +14,11 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::paginate();
+        $filters = request()->only([
+           'search',
+            'role'
+        ]);
+        $users = User::latest()->filter($filters)->paginate();
 
         return new UserCollection($users);
     }
