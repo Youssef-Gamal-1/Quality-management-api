@@ -18,7 +18,7 @@ class Program extends Model
 
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Program::class,'program_user');
+        return $this->belongsToMany(User::class,'program_user');
     }
 
     public function standards(): \Illuminate\Database\Eloquent\Relations\HasMany

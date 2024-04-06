@@ -25,7 +25,8 @@ class UpdateRequest extends FormRequest
             'title' => 'sometimes|string|max:255',
             'code' => 'sometimes|string|max:255',
             'aim' => 'sometimes|string',
-            'message' => 'sometimes|string'
+            'message' => 'sometimes|string',
+            'user_id' => 'sometimes|exists:users,id'
         ];
     }
 }

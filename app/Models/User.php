@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(User::class,'program_user');
+        return $this->belongsToMany(Program::class,'program_user');
     }
 
     public function scopeFilter(Builder | QueryBuilder $query, array $filters)

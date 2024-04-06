@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\admin\program;
 
+use App\Models\Program;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,14 @@ class ProgramResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $program = Program::find($this->id);
+        $data = [
+          'title' => $this->title,
+          'message' => $this->message,
+          'aim' => $this->aim,
+          'code' => $this->code,
+          'program_coordinator' => $program->users()->first()->name
+        ];
+        return $data;
     }
 }

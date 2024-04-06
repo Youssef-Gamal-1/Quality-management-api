@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $validated = $request->validate([
             'email' => 'required|min:5|max:255',
-            'password' => 'required|min:8|max:255'
+            'password' => 'required|min:6|max:255'
         ]);
         $user = User::where('academic_email',$validated['email'])
             ->orwhere('email',$validated['email'])
