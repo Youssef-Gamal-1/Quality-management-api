@@ -62,26 +62,26 @@ class ProgramController extends Controller
     public function update(UpdateRequest $request, Program $program)
     {
         $data = $request->validated();
-        if(!isset($data['user_id']))
+        $validUser = '';
+        if(isset($data['user_id']))
         {
-            return response()->json([
-               'msg' => 'user id not inserted'
-            ], 400);
-        }
-        $validUser = User::where('id',$data['user_id'])
-            ->where('PC',1)
-            ->orWhere('TS',1)
-            ->first();
-        if(!$validUser)
-        {
-            return response()->json([
-                'msg' => 'Not valid user'
-            ], 400);
+            $validUser = User::where('id',$data['user_id'])
+                ->where('PC',1)
+                ->orWhere('TS',1)
+                ->first();
+            if(!$validUser)
+            {
+                return response()->json([
+                    'msg' => 'Not valid user'
+                ], 400);
+            }
         }
 
         $program->update($data);
-        $program->users()->sync([$validUser->id]);
-
+        if($validUser !== '')
+        {
+            $program->users()->sync([$validUser->id]);
+        }
         return new ProgramResource($program);
     }
 

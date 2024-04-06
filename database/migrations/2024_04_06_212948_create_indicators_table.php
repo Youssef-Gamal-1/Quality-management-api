@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('standards', function (Blueprint $table) {
+        Schema::create('indicators', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignIdFor(\App\Models\Program::class)->constrained()
-                ->onDelete('cascade');
-            $table->foreignIdFor(\App\Models\User::class)->constrained()
-                ->onDelete('cascade');
+            $table->smallInteger('number');
+            $table->foreignIdFor(\App\Models\Standard::class)->constrained()
+                    ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('standards');
+        Schema::dropIfExists('indicators');
     }
 };

@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Program::class,'program_user');
     }
 
+    public function standard(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Standard::class);
+    }
+
     public function scopeFilter(Builder | QueryBuilder $query, array $filters)
     {
         return $query->when(
