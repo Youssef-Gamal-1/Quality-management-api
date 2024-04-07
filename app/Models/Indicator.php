@@ -14,4 +14,9 @@ class Indicator extends Model
     {
         return $this->belongsTo(Standard::class);
     }
+
+    public function forms(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Form::class);
+    }
 }

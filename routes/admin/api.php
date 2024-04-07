@@ -23,6 +23,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/programs/{program}/standards',\App\Http\Controllers\admin\StandardController::class);
     Route::apiResource('/programs/{program}/standards/{standard}/indicators',
         \App\Http\Controllers\admin\IndicatorController::class);
+    // Form special functions
+    Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/files',[
+        \App\Http\Controllers\admin\FormController::class,'store']);
+    Route::put('/programs/{program}/standards/{standard}/indicators/{indicator}/files/{file}',[
+        \App\Http\Controllers\admin\FormController::class,'update']);
+    Route::delete('/programs/{program}/standards/{standard}/indicators/{indicator}/files/{file}',[
+        \App\Http\Controllers\admin\FormController::class,'destroy']);
 });
 
 
