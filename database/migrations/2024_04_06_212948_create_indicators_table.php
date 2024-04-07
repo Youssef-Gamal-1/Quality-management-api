@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->smallInteger('number');
+            $table->smallInteger('number_of_forms');
             $table->foreignIdFor(\App\Models\Standard::class)->constrained()
                     ->onDelete('cascade');
             $table->timestamps();

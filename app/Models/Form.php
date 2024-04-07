@@ -13,7 +13,8 @@ class Form extends Model
         'description',
         'indicator_id',
         'status',
-        'path'
+        'path',
+        'type'
     ];
 
     public function indicator(): \Illuminate\Database\Eloquent\Relations\BelongsTo

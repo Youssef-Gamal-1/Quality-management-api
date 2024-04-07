@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->boolean('status');
+            $table->boolean('status')->default(false);
             $table->string('type'); // input[text,file,..], textarea, select
             $table->string('path')->nullable();
             $table->foreignIdFor(\App\Models\Indicator::class)->nullable()

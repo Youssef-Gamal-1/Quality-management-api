@@ -24,12 +24,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/programs/{program}/standards/{standard}/indicators',
         \App\Http\Controllers\admin\IndicatorController::class);
     // Form special functions
-    Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/files',[
+    Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/forms',[
         \App\Http\Controllers\admin\FormController::class,'store']);
-    Route::put('/programs/{program}/standards/{standard}/indicators/{indicator}/files/{file}',[
+    Route::put('/programs/{program}/standards/{standard}/indicators/{indicator}/forms/{form}',[
         \App\Http\Controllers\admin\FormController::class,'update']);
-    Route::delete('/programs/{program}/standards/{standard}/indicators/{indicator}/files/{file}',[
+    Route::delete('/programs/{program}/standards/{standard}/indicators/{indicator}/forms/{form}',[
         \App\Http\Controllers\admin\FormController::class,'destroy']);
+    Route::get('/download/file/{id}', [\App\Http\Controllers\admin\FormController::class, 'download']);
+
 });
 
 
