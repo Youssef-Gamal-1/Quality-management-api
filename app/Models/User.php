@@ -54,6 +54,11 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+ public function permission() 
+    {
+        return $this->belongsToMany(User::class,'permission_users');
+    }
+    
     public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class,'program_user');
