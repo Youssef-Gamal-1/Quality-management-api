@@ -11,7 +11,7 @@ class permission extends Model
     public $table ="permission";
     public $fillable=['p_id','grant_date','expiration_date','action','resource'];
 
-    public function users() 
+    public function users() \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(permission::class,'permission_users');
     }
