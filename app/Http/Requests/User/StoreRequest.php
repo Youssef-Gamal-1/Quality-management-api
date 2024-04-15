@@ -31,10 +31,13 @@ class StoreRequest extends FormRequest
             'phone'=> 'string|max:11|min:11' ,
             'QM' => 'boolean',
             'SC' => 'boolean',
+            'standard_id' => 'required_if:SC,true',
             'PC' => 'boolean',
+            'program_id' => 'required_if:PC,true',
             'QU' => 'boolean',
             'EC' => 'boolean',
             'TS' => 'boolean',
+//            'programs' => 'array,required_if:TS,true',
         ];
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Indicator extends Model
 {
     use HasFactory;
-    protected $fillable = ['title','number','standard_id'];
+    protected $fillable = ['title','number','standard_id','number_of_forms'];
 
     public function standard(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

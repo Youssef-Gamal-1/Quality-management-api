@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('program_user', function (Blueprint $table) {
-            $table->foreignIdFor(\App\Models\User::class)
-                ->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+        Schema::create('program_standard', function (Blueprint $table) {
             $table->foreignIdFor(\App\Models\Program::class)
                 ->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Standard::class)
+                ->constrained()
+                ->onDelete('cascade');
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('program_user');
+        Schema::dropIfExists('program_standard');
     }
 };

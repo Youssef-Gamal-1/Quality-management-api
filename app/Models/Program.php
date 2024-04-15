@@ -21,9 +21,9 @@ class Program extends Model
         return $this->belongsToMany(User::class,'program_user');
     }
 
-    public function standards(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function standards(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->hasMany(Standard::class);
+        return $this->BelongsToMany(Standard::class,'program_standard');
     }
 
     public function courses(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

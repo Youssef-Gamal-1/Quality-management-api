@@ -20,7 +20,8 @@ return new class extends Migration
             $table->string('path')->nullable();
             $table->foreignIdFor(\App\Models\Indicator::class)->nullable()
                 ->constrained()
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
             $table->timestamps();
         });
     }

@@ -21,31 +21,43 @@ class StandardController extends Controller
     public function store(StandardRequest $request, Program $program)
     {
         $validatedData = $request->validated();
+        $standardCoordinator = null;
 
-        if (!isset($validatedData['user_id'])) {
-            return response()->json([
-                'msg' => 'You must specify the user for the standard'
-            ], 400);
+        // Check if a user ID is provided
+        if (isset($validatedData['user_id'])) {
+            // Find the user by ID
+            $standardCoordinator = User::findOrFail($validatedData['user_id']);
+
+            // Check if the user already has a standard associated
+            if ($standardCoordinator->SC === 1) {
+                return response()->json([
+                    'msg' => 'User already has a standard associated'
+                ], 400);
+            }
         }
 
-        $user = User::findOrFail($validatedData['user_id']);
-        // Check if the user already has a standard associated
-        if ($user->standard()->exists()) {
-            return response()->json([
-                'msg' => 'User already has a standard associated'
-            ], 400);
-        }
-        // Create the standard associated with the program and user
+        // Create a new standard instance with the validated data
         $standard = new Standard($validatedData);
-        $standard->program()->associate($program);
-        $standard->user()->associate($user);
+
+        // Save the standard to the database
         $standard->save();
 
+        // If a standard coordinator is provided, associate the user with the standard
+        if ($standardCoordinator) {
+            $standardCoordinator->SC = 1;
+            $standardCoordinator->save();
+
+            // Associate the standard with the user
+            $standard->user()->associate($standardCoordinator);
+        }
+
+        // Attach the standard to the program
+        $program->standards()->attach($standard->id);
+
+        // Return the newly created standard resource
         return new StandardResource($standard);
     }
-
-
-    public function show(Standard $standard)
+    public function show(Program $program, Standard $standard)
     {
         return new StandardResource($standard);
     }
@@ -66,15 +78,24 @@ class StandardController extends Controller
             // If the new user is different from the current one associated with the standard
             if ($user->id !== $standard->user_id) {
                 // Check if the new user already has a standard associated
-                if ($user->standard()->exists()) {
+                if ($user->SC === 1) {
                     return response()->json([
                         'msg' => 'User already has a standard associated'
                     ], 400);
                 }
-            }
 
-            // Associate the standard with the new user
-            $standard->user()->associate($user);
+                // If the standard is currently associated with a user
+                if ($standard->user) {
+                    // Reset the SC flag of the current user
+                    $standard->user->SC = 0;
+                    $standard->user->save();
+                }
+
+                // Associate the standard with the new user and set SC flag to 1
+                $standard->user()->associate($user);
+                $user->SC = 1;
+                $user->save();
+            }
         }
 
         // Update the standard with the validated data
@@ -83,8 +104,13 @@ class StandardController extends Controller
         return new StandardResource($standard);
     }
 
-    public function destroy(Standard $standard)
+    public function destroy(Program $program, Standard $standard)
     {
+        if ($standard->user) {
+            $standard->user->SC = 0;
+            $standard->user->save();
+        }
+
         $standard->delete();
 
         return response()->json([

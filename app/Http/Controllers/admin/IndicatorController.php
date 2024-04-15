@@ -15,7 +15,7 @@ class IndicatorController extends Controller
 
     public function index()
     {
-        return new IndicatorCollection(Indicator::all());
+        return new IndicatorCollection(Indicator::paginate(1));
     }
 
     public function store(Request $request, Program $program, Standard $standard)
@@ -23,6 +23,7 @@ class IndicatorController extends Controller
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'number' => 'required|integer|min:1',
+            'number_of_forms' => 'required|integer|min:1',
         ]);
 
         $validatedData['standard_id'] = $standard->id;

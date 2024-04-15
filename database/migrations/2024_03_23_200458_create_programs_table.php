@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('message');
             $table->text('aim');
+            $table->text('goals');
             $table->timestamps();
         });
     }

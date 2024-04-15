@@ -9,10 +9,10 @@ class Standard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title'];
-    public function program(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    protected $fillable = ['title','user_id'];
+    public function program(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsTo(Program::class);
+        return $this->belongsToMany(Program::class,'program_standard');
     }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

@@ -24,32 +24,26 @@ class ProgramController extends Controller
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
-
+        $programCoordinator = null;
         // Check if user_id is provided
-        if (!isset($data['user_id'])) {
-            return response()->json([
-                'msg' => 'User id not provided'
-            ], 400);
+        if (isset($data['user_id'])) {
+            $programCoordinator = User::findOrFail($data['user_id']);
+            if($programCoordinator->PC === 1 &&
+                $programCoordinator->programs()->exists()
+            )
+            {
+                return response()->json([
+                    'msg' => 'User already associated with a program!'
+                ]);
+            }
         }
-
-        // Find a valid user based on the provided user_id and conditions
-        $validUser = User::where('id', $data['user_id'])
-            ->where(function ($query) {
-                $query->where('PC', 1)
-                    ->orWhere('TS', 1);
-            })
-            ->first();
-
-        // If no valid user is found, return an error response
-        if (!$validUser) {
-            return response()->json([
-                'msg' => 'Not a valid user'
-            ], 400);
-        }
-
         // Create a new program and sync the user_id with the program's users relationship
         $program = Program::create($data);
-        $program->users()->sync([$validUser->id]);
+        if($programCoordinator)
+        {
+            $program->users()->sync([$programCoordinator->id]);
+            $programCoordinator->update(['PC' => 1]);
+        }
 
         return new ProgramResource($program);
     }
@@ -65,15 +59,12 @@ class ProgramController extends Controller
         $validUser = '';
         if(isset($data['user_id']))
         {
-            $validUser = User::where('id',$data['user_id'])
-                ->where('PC',1)
-                ->orWhere('TS',1)
-                ->first();
-            if(!$validUser)
+            $validUser = User::findOrFail($data['user_id']);
+            if($validUser->PC === 1)
             {
                 return response()->json([
-                    'msg' => 'Not valid user'
-                ], 400);
+                    'msg' => 'User already associated with a program!'
+                ]);
             }
         }
 

@@ -17,11 +17,13 @@ class ProgramResource extends JsonResource
     {
         $program = Program::find($this->id);
         $data = [
-          'title' => $this->title,
-          'message' => $this->message,
-          'aim' => $this->aim,
-          'code' => $this->code,
-          'program_coordinator' => $program->users()->first()->name
+              'id' => $this->id,
+              'title' => $this->title,
+              'message' => $this->message,
+              'aim' => $this->aim,
+              'code' => $this->code,
+              'goals' => $this->goals,
+              'program_coordinator' => $program->users()->first()->name ?? 'Not associated yet!'
         ];
         return $data;
     }

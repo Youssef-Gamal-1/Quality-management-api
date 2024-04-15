@@ -19,7 +19,7 @@ class StandardResource extends JsonResource
         return [
             'ID' => $this->id,
             'Title' => $this->title,
-            'Standard Coordinator' => $standard->user()->first()->name
+            'Standard Coordinator' => $standard->user()->first()->name ?? "Not associated yet!"
         ];
     }
 }

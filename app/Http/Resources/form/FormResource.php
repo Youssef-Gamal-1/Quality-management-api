@@ -18,7 +18,7 @@ class FormResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'type' => $this->type,
-            'status' => $this->status
+            'status' => $this->status,
         ];
     }
 }

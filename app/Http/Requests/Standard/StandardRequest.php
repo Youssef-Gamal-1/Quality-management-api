@@ -23,7 +23,7 @@ class StandardRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'user_id' => 'sometimes|required|exists:users,id'
+            'user_id' => 'sometimes|exists:users,id'
         ];
     }
 }

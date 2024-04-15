@@ -26,7 +26,8 @@ class StoreRequest extends FormRequest
             'code' => 'required|string|max:255',
             'aim' => 'required|string',
             'message' => 'required|string',
-            'user_id' => 'required|exists:users,id'
+            'goals' => 'required|string',
+            'user_id' => 'exists:users,id'
         ];
     }
 }
