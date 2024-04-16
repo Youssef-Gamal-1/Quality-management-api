@@ -15,11 +15,10 @@ class StandardResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $standard = Standard::find($this->id);
         return [
             'ID' => $this->id,
             'Title' => $this->title,
-            'Standard Coordinator' => $standard->user()->first()->name ?? "Not associated yet!"
+            'Standard Coordinator' => $this->user->name ?? "Not associated yet!"
         ];
     }
 }

@@ -15,19 +15,17 @@ class StandardController extends Controller
 {
     public function index(Program $program)
     {
-        return new StandardCollection(Standard::all());
+        $standards = $program->standards;
+        return new StandardCollection($standards);
     }
 
     public function store(StandardRequest $request,  Program $program)
     {
         $validatedData = $request->validated();
         $standardCoordinator = null;
-
         // Check if a user ID is provided
         if (isset($validatedData['user_id'])) {
-            // Find the user by ID
             $standardCoordinator = User::findOrFail($validatedData['user_id']);
-
             // Check if the user already has a standard associated
             if ($standardCoordinator->SC === 1) {
                 return response()->json([
@@ -35,83 +33,86 @@ class StandardController extends Controller
                 ], 400);
             }
         }
+        $validatedData['program_id'] = $program->id;
+        $standard = Standard::create($validatedData);
 
-        // Create a new standard instance with the validated data
-        $standard = new Standard($validatedData);
-
-        // Save the standard to the database
-        $standard->save();
-
-        // If a standard coordinator is provided, associate the user with the standard
         if ($standardCoordinator) {
             $standardCoordinator->SC = 1;
             $standardCoordinator->save();
 
-            // Associate the standard with the user
             $standard->user()->associate($standardCoordinator);
         }
 
-        // Return the newly created standard resource
         return new StandardResource($standard);
     }
     public function show(Program $program ,Standard $standard)
     {
-        return new StandardResource($standard);
+        try {
+            $this->validateStandard($program,$standard);
+            return new StandardResource($standard);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
     }
 
     public function update(Request $request, Program $program , Standard $standard)
     {
-        // Validate the incoming request data
-        $validatedData = $request->validate([
-            'title' => 'sometimes|string|required|max:255',
-            'user_id' => 'sometimes|required|exists:users,id'
-        ]);
+        try {
+            $this->validateStandard($program,$standard);
+            $validatedData = $request->validate([
+                'title' => 'sometimes|string|required|max:255',
+                'user_id' => 'sometimes|required|exists:users,id'
+            ]);
 
-        // Check if a user_id is provided in the request
-        if (isset($validatedData['user_id'])) {
-            // Find the corresponding User model
-            $user = User::findOrFail($validatedData['user_id']);
+            if (isset($validatedData['user_id'])) {
+                $user = User::findOrFail($validatedData['user_id']);
 
-            // If the new user is different from the current one associated with the standard
-            if ($user->id !== $standard->user_id) {
-                // Check if the new user already has a standard associated
-                if ($user->SC === 1) {
-                    return response()->json([
-                        'msg' => 'User already has a standard associated'
-                    ], 400);
+                if ($user->id !== $standard->user_id) {
+                    if ($user->SC === 1) {
+                        return response()->json([
+                            'msg' => 'User already has a standard associated'
+                        ], 400);
+                    }
+                    if ($standard->user) {
+                        $standard->user->SC = 0;
+                        $standard->user->save();
+                    }
+
+                    $standard->user()->associate($user);
+                    $user->SC = 1;
+                    $user->save();
                 }
-
-                // If the standard is currently associated with a user
-                if ($standard->user) {
-                    // Reset the SC flag of the current user
-                    $standard->user->SC = 0;
-                    $standard->user->save();
-                }
-
-                // Associate the standard with the new user and set SC flag to 1
-                $standard->user()->associate($user);
-                $user->SC = 1;
-                $user->save();
             }
+
+            $standard->update($validatedData);
+            return new StandardResource($standard);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        // Update the standard with the validated data
-        $standard->update($validatedData);
-
-        return new StandardResource($standard);
     }
 
     public function destroy(Program $program ,Standard $standard)
     {
-        if ($standard->user) {
-            $standard->user->SC = 0;
-            $standard->user->save();
+        try {
+            $this->validateStandard($program,$standard);
+            if ($standard->user) {
+                $standard->user->SC = 0;
+                $standard->user->save();
+            }
+            $standard->delete();
+            return response()->json([
+                'msg' => 'Standard deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
         }
-
-        $standard->delete();
-
-        return response()->json([
-            'msg' => 'Standard deleted successfully!'
-        ]);
+    }
+    private function validateStandard(Program $program, Standard $standard)
+    {
+        if($program->id !== $standard->program->id)
+        {
+            throw new \Exception('Standard does not belong to the specified program.', 404);
+        }
     }
 }
+

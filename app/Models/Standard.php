@@ -9,7 +9,7 @@ class Standard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','user_id'];
+    protected $fillable = ['title','user_id','program_id'];
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
