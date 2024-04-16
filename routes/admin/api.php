@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/programs/{program}/standards',\App\Http\Controllers\admin\StandardController::class);
     Route::apiResource('/programs/{program}/standards/{standard}/indicators',
         \App\Http\Controllers\admin\IndicatorController::class);
-    // Form special functions
+    // Form special routes
     Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/forms',[
         \App\Http\Controllers\admin\FormController::class,'store']);
     Route::put('/programs/{program}/standards/{standard}/indicators/{indicator}/forms/{form}',[

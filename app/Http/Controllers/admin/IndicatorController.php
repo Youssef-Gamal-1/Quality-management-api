@@ -13,17 +13,17 @@ use Illuminate\Http\Request;
 class IndicatorController extends Controller
 {
 
-    public function index()
+    public function index(Program $program ,Standard $standard)
     {
-        return new IndicatorCollection(Indicator::paginate(1));
+        $indicators = $standard->indicators()->paginate(1);
+        return new IndicatorCollection($indicators);
     }
 
-    public function store(Request $request, Program $program, Standard $standard)
+    public function store(Request $request,  Program $program ,Standard $standard)
     {
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'number' => 'required|integer|min:1',
-            'number_of_forms' => 'required|integer|min:1',
         ]);
 
         $validatedData['standard_id'] = $standard->id;
@@ -33,12 +33,14 @@ class IndicatorController extends Controller
     }
 
 
-    public function show(Program $program, Standard $standard, Indicator $indicator)
+    public function show(Program $program ,Standard $standard, Indicator $indicator)
     {
+        $indicator = $standard->indicators()->findOrFail($indicator->id);
         return new IndicatorResource($indicator);
     }
 
-    public function update(Request $request, Program $program, Standard $standard, Indicator $indicator)
+
+    public function update(Request $request,  Program $program ,Standard $standard, Indicator $indicator)
     {
         $validatedData = $request->validate([
             'title' => 'sometimes|string|max:255',
@@ -52,8 +54,9 @@ class IndicatorController extends Controller
 
     }
 
-    public function destroy(Program $program, Standard $standard, Indicator $indicator)
+    public function destroy(Program $program ,Standard $standard, Indicator $indicator)
     {
+        $indicators = $standard->indicators()->findOrFail($indicator->id);
         $indicator->delete();
 
         return response()->json([

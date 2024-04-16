@@ -18,8 +18,7 @@ class IndicatorResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'number' => $this->number,
-            'number_of_forms' => $this->number_of_forms,
-            'forms' => $this->forms()->get()
+            'forms' => $this->forms
         ];
     }
 }

@@ -13,12 +13,12 @@ use Illuminate\Http\Request;
 
 class StandardController extends Controller
 {
-    public function index()
+    public function index(Program $program)
     {
         return new StandardCollection(Standard::all());
     }
 
-    public function store(StandardRequest $request, Program $program)
+    public function store(StandardRequest $request,  Program $program)
     {
         $validatedData = $request->validated();
         $standardCoordinator = null;
@@ -51,18 +51,15 @@ class StandardController extends Controller
             $standard->user()->associate($standardCoordinator);
         }
 
-        // Attach the standard to the program
-        $program->standards()->attach($standard->id);
-
         // Return the newly created standard resource
         return new StandardResource($standard);
     }
-    public function show(Program $program, Standard $standard)
+    public function show(Program $program ,Standard $standard)
     {
         return new StandardResource($standard);
     }
 
-    public function update(Request $request, Program $program, Standard $standard)
+    public function update(Request $request, Program $program , Standard $standard)
     {
         // Validate the incoming request data
         $validatedData = $request->validate([
@@ -104,7 +101,7 @@ class StandardController extends Controller
         return new StandardResource($standard);
     }
 
-    public function destroy(Program $program, Standard $standard)
+    public function destroy(Program $program ,Standard $standard)
     {
         if ($standard->user) {
             $standard->user->SC = 0;

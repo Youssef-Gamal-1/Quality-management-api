@@ -32,14 +32,15 @@ class UserController extends Controller
         $standard = null;
         $program = null;
         $programs = null;
+
         if(isset($data['standard_id']))
         {
             $standard = Standard::findOrFail($data['standard_id']);
             if($standard->user()->exists())
             {
                 return response()->json([
-                    "msg" => 'Standard already has a coordinator'
-                ]);
+                    "error" => 'Standard already has a coordinator'
+                ], 422); // Use 422 status code for validation errors
             }
             unset($data['standard_id']);
         }
@@ -49,8 +50,8 @@ class UserController extends Controller
             if($program->users()->exists() && $program->users()->first()->PC === 1)
             {
                 return response()->json([
-                    "msg" => 'Program already has a coordinator'
-                ]);
+                    "error" => 'Program already has a coordinator'
+                ], 422); // Use 422 status code for validation errors
             }
             unset($data['program_id']);
         }
@@ -60,16 +61,24 @@ class UserController extends Controller
             unset($data['programs']);
         }
 
+        // Creating user
         $user = User::create($data);
-        if($standard) $user->standard_id = $standard->id;
+
+        // Assigning standard and program
+        if($standard)
+        {
+            $standard->user_id = $user->id;
+            $standard->save();
+        };
         if($program) $user->programs()->sync($program->id);
         if($programs)
         {
-            foreach($programs as $program)
+            foreach($programs as $programId)
             {
-                $user->programs()->sync($program->id);
+                $user->programs()->attach($programId);
             }
         }
+
         return response()->json([
             'msg' => 'User created successfully',
             'user' => new UserResource($user)

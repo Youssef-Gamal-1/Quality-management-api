@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Storage;
 class FormController extends Controller
 {
 
-    public function store(StoreFormRequest $request, Program $program, Standard $standard, Indicator $indicator): FormResource
+    public function store(StoreFormRequest $request, Standard $standard, Indicator $indicator)
     {
         $request->validated();
         $path = null;
@@ -33,12 +33,10 @@ class FormController extends Controller
             'indicator_id' => $indicator->id,
             'path' => $path,
         ]);
-
         return new FormResource($form);
-
     }
 
-    public function update(UpdateFormRequest $request, Program $program, Standard $standard, Indicator $indicator, Form $form): FormResource
+    public function update(UpdateFormRequest $request, Program $program ,Standard $standard, Indicator $indicator, Form $form): FormResource
     {
         $validatedData = $request->validated();
         $path = null;
@@ -53,7 +51,7 @@ class FormController extends Controller
         return new FormResource($form);
     }
 
-    public function destroy(Program $program, Standard $standard, Indicator $indicator, Form $form): \Illuminate\Http\JsonResponse
+    public function destroy( Program $program ,Standard $standard, Indicator $indicator, Form $form): \Illuminate\Http\JsonResponse
     {
         $form->delete();
 
