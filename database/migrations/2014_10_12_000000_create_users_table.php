@@ -20,6 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone');
+            $table->boolean('activated')->default(false);
             $table->boolean('QM')->default(0);
             $table->boolean('PC')->default(0);
             $table->boolean('TS')->default(0);

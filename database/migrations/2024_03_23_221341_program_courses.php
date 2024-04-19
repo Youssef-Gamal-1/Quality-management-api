@@ -17,6 +17,7 @@ return new class extends Migration
                 ->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Course::class)
                 ->constrained()
+                ->onDelete('cascade')
                 ->onUpdate('cascade');
         });
     }

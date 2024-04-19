@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('year');
             $table->string('semester');
             $table->string('success_ratio');
+            $table->boolean('status')->default(false);
             $table->string('path');
             $table->foreignIdFor(Course::class)->constrained()
                 ->onDelete('cascade');

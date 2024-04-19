@@ -1,19 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\auth\AuthController;
+use App\Http\Controllers\admin\CourseController;
+use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
 Route::post('/login',[AuthController::class,'login']);
 
@@ -23,6 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/programs/{program}/standards',\App\Http\Controllers\admin\StandardController::class);
     Route::apiResource('/programs/{program}/standards/{standard}/indicators',
         \App\Http\Controllers\admin\IndicatorController::class);
+    Route::apiResource('/programs/{program}/courses',CourseController::class);
+    Route::apiResource('/programs/{program}/courses/{course}/degrees',\App\Models\Degree::class);
     // Form special routes
     Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/forms',[
         \App\Http\Controllers\admin\FormController::class,'store']);

@@ -9,7 +9,7 @@ class Course extends Model
 {
     use HasFactory;
     protected $fillable = ['title','code','hours'];
-    public function program(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Program::class,'program_courses');
     }
