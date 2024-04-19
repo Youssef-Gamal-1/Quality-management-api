@@ -20,10 +20,7 @@ class StoreFormRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'status' => 'boolean',
-            'type' => 'string|max:20',
-            'path' => 'file|mimes:jpg,jpeg,png,pdf,docx,xlsx|max:3072',
+            'type' => 'string|max:20'
         ];
     }
 }

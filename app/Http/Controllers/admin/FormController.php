@@ -23,21 +23,17 @@ class FormController extends Controller
         try {
             $this->validateStandard($program,$standard);
             $validatedData = $request->validated();
-            $path = null;
-            if($request->hasFile('path'))
-            {
-                $file = $request->file('path');
-                $path = $file->store('indicators', 'public');
+            $indicatorTitle = $indicator->title;
+            $indicators = Indicator::where('title',$indicatorTitle)->get();
+
+            foreach($indicators as $newIndicator){
+                $newIndicator->forms()->create([
+                    'title' => $validatedData['title'],
+                    'type' => $validatedData['type']
+                ]);
             }
-            $form = $indicator->forms()->create([
-                'title' => $validatedData['title'],
-                'description' => $validatedData['description'],
-                'type' => $validatedData['type'],
-                'status' => $validatedData['status'],
-                'indicator_id' => $indicator->id,
-                'path' => $path,
-            ]);
-            return new FormResource($form);
+
+            return new FormResource($indicator->forms()->latest()->first());
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception],422);
         }
@@ -48,17 +44,20 @@ class FormController extends Controller
         try {
             $this->validateStandard($program,$standard);
             $validatedData = $request->validated();
-            $path = null;
-            if($request->hasFile('path'))
-            {
-                $file = $request->file('path');
-                $path = $file->store('indicators', 'public');
+//            $path = null;
+//            if($request->hasFile('path'))
+//            {
+//                $file = $request->file('path');
+//                $path = $file->store('indicators', 'public');
+//            }
+//            $validatedData['path'] = $path;
+            $formTitle = $form->title;
+            $forms = Form::where('title',$formTitle)->get();
+            foreach($forms as $newForm){
+                $newForm->update($validatedData);
             }
-            $validatedData['path'] = $path;
-            $form = $indicator->forms()->findOrFail($form->id);
-            $form->update($validatedData);
 
-            return new FormResource($form);
+            return response()->json(['success' => 'Form updated successfully!'],200);
         } catch (\Exception $exception) {
             return response()->json(['error' => 'The requested resource not found!']);
         }
@@ -68,11 +67,14 @@ class FormController extends Controller
     {
         try {
             $this->validateStandard($program,$standard);
-            $form = $indicator->forms()->findOrFail($form->id);
-            $form->delete();
+            $formTitle = $form->title;
+            $forms = Form::where('title',$formTitle)->get();
+            foreach($forms as $newForm){
+                $newForm->delete();
+            }
             return response()->json([
-                'msg' => 'Form deleted'
-            ]);
+                'success' => 'Form deleted successfully!'
+            ], 200);
         } catch (\Exception $exception) {
             return response()->json(['error' => 'The requested resource not found!']);
         }

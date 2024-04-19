@@ -11,7 +11,7 @@ class Form extends Model
     use HasFactory;
     protected $fillable = [
         'title',
-        'description',
+        'value',
         'indicator_id',
         'status',
         'path',
@@ -23,6 +23,11 @@ class Form extends Model
         return $this->belongsTo(Indicator::class);
     }
 
+    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -30,7 +35,10 @@ class Form extends Model
         // Listen for the deleting event
         static::deleting(function (Form $form) {
             // Delete the associated file when the model is being deleted
-            Storage::delete($form->path);
+            if($form->path)
+            {
+                Storage::delete($form->path);
+            }
         });
     }
 }

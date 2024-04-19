@@ -23,10 +23,8 @@ class UpdateFormRequest extends FormRequest
     {
         return [
             'title' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
             'status' => 'sometimes|boolean',
             'type' => 'sometimes|string|max:20',
-            'path' => 'sometimes|file|mimes:jpg,jpeg,png,pdf,docx,xlsx|max:3072',
         ];
     }
 }

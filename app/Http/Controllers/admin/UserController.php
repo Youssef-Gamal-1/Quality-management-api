@@ -29,14 +29,14 @@ class UserController extends Controller
     {
         $data = $request->validated();
         unset($data['confirm-password']);
-        $standard = null;
+        $requestStandard = null;
         $program = null;
         $programs = null;
 
         if(isset($data['standard_id']))
         {
-            $standard = Standard::findOrFail($data['standard_id']);
-            if($standard->user()->exists())
+            $requestStandard = Standard::findOrFail($data['standard_id']);
+            if($requestStandard->user()->exists())
             {
                 return response()->json([
                     "error" => 'Standard already has a coordinator'
@@ -61,14 +61,15 @@ class UserController extends Controller
             unset($data['programs']);
         }
 
-        // Creating user
         $user = User::create($data);
-
-        // Assigning standard and program
-        if($standard)
+        if($requestStandard)
         {
-            $standard->user_id = $user->id;
-            $standard->save();
+            $standards = Standard::where('title',$requestStandard->title)->get();
+            foreach($standards as $standard)
+            {
+                $standard->user_id = $user->id;
+                $standard->save();
+            }
         };
         if($program) $user->programs()->sync($program->id);
         if($programs)
@@ -80,9 +81,9 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'msg' => 'User created successfully',
+            'success' => 'User created successfully',
             'user' => new UserResource($user)
-        ]);
+        ], 200);
     }
 
     public function show(User $user)
@@ -100,35 +101,33 @@ class UserController extends Controller
             unset($data['confirm-password']);
         }
 
-        // Initialize variables for related models
-        $standard = null;
+        $requestStandard = null;
         $program = null;
         $programs = null;
 
-        // Handle standard coordinator assignment
         if(isset($data['standard_id']))
         {
-            $standard = Standard::findOrFail($data['standard_id']);
-
-            // Check if the standard already has a coordinator
-            if($standard->user()->exists())
+            $requestStandard = Standard::findOrFail($data['standard_id']);
+            if($requestStandard->user()->exists())
             {
                 return response()->json([
                     "msg" => 'Standard already has a coordinator'
                 ]);
             }
 
-            // Assign the standard to the user
-            $user->standard_id = $standard->id;
+            $standards = Standard::where('title',$requestStandard->title);
+            foreach($standards as $standard)
+            {
+                $standard->user_id = $user->id;
+                $standard->save();
+            }
             unset($data['standard_id']);
         }
 
-        // Handle program coordinator assignment
         if(isset($data['program_id']))
         {
             $program = Program::findOrFail($data['program_id']);
 
-            // Check if the program already has a coordinator
             if($program->users()->exists() && $program->users()->first()->PC === 1)
             {
                 return response()->json([
@@ -136,26 +135,22 @@ class UserController extends Controller
                 ]);
             }
 
-            // Sync the program with the user
             $user->programs()->sync($program->id);
             unset($data['program_id']);
         }
 
-        // Handle multiple program coordinators assignment
         if(isset($data['programs']))
         {
             $programs = $data['programs'];
             unset($data['programs']);
         }
 
-        // Update the user data
         $user->update($data);
 
-        // Return response
         return response()->json([
-            'msg' => 'User data updated successfully',
+            'success' => 'User data updated successfully!',
             'user' => new UserResource($user)
-        ]);
+        ], 200);
     }
 
 
@@ -164,7 +159,7 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json([
-            'msg' => 'User deleted successfully!'
-        ]);
+            'success' => 'User deleted successfully!'
+        ], 200);
     }
 }

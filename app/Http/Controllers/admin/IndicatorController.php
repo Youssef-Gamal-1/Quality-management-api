@@ -31,12 +31,18 @@ class IndicatorController extends Controller
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
                 'number' => 'required|integer|min:1',
+                'number_of_forms' => 'integer|min:1',
             ]);
 
-            $validatedData['standard_id'] = $standard->id;
-            $indicator = Indicator::create($validatedData);
 
-            return new IndicatorResource($indicator);
+            $standardTitle = $standard->title;
+            $standards = Standard::where('title',$standardTitle)->get();
+            foreach ($standards as $newStandard) {
+                $validatedData['standard_id'] = $standard->id;
+                $newStandard->indicators()->create($validatedData);
+            }
+
+            return new IndicatorResource($standard->indicators()->latest()->first());
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -63,10 +69,14 @@ class IndicatorController extends Controller
                 'number' => 'sometimes|integer|min:1',
             ]);
 
-            $validatedData['standard_id'] = $standard->id;
-            $indicator->update($validatedData);
+            $indicatorTitle = $indicator->title;
+            $indicators = Indicator::where('title',$indicatorTitle)->get();
 
-            return new IndicatorResource($indicator);
+            foreach ($indicators as $newIndicator) {
+                $newIndicator->update($validatedData);
+            }
+
+            return new IndicatorResource($standard->indicators()->latest()->first());
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -77,9 +87,11 @@ class IndicatorController extends Controller
     {
         try {
             $this->validateStandard($program, $standard);
-            $indicators = $standard->indicators()->findOrFail($indicator->id);
-            $indicator->delete();
-
+            $indicatorTitle = $indicator->title;
+            $indicators = Indicator::where('title',$indicatorTitle)->get();
+            foreach ($indicators as $newIndicator) {
+                $newIndicator->delete();
+            }
             return response()->json([
                 'msg' => 'Indicator successfully deleted'
             ]);

@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
+            $table->text('value')->nullable()->default(null);
             $table->boolean('status')->default(false);
             $table->string('type'); // input[text,file,..], textarea, select
             $table->string('path')->nullable();
             $table->foreignIdFor(\App\Models\Indicator::class)->nullable()
                 ->constrained()
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
+                ->onDelete('cascade');
+            $table->foreignIdFor(\App\Models\Course::class)->nullable()
+                ->constrained()
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

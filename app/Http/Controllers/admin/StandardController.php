@@ -19,7 +19,7 @@ class StandardController extends Controller
         return new StandardCollection($standards);
     }
 
-    public function store(StandardRequest $request,  Program $program)
+    public function store(StandardRequest $request, Program $program)
     {
         $validatedData = $request->validated();
         $standardCoordinator = null;
@@ -33,19 +33,20 @@ class StandardController extends Controller
                 ], 400);
             }
         }
-        $validatedData['program_id'] = $program->id;
-        $standard = Standard::create($validatedData);
+        $programs = Program::all();
+        foreach($programs as $newProgram) {
+            $validatedData['program_id'] = $newProgram->id;
+            $standard = Standard::create($validatedData);
+            if ($standardCoordinator) {
+                $standardCoordinator->SC = 1;
+                $standardCoordinator->save();
 
-        if ($standardCoordinator) {
-            $standardCoordinator->SC = 1;
-            $standardCoordinator->save();
-
-            $standard->user()->associate($standardCoordinator);
+                $standard->user()->associate($standardCoordinator);
+            }
         }
-
-        return new StandardResource($standard);
+        return new StandardResource($program->standards()->latest()->first());
     }
-    public function show(Program $program ,Standard $standard)
+    public function show(Program $program ,Standard $standard) // route model binding
     {
         try {
             $this->validateStandard($program,$standard);
@@ -63,29 +64,31 @@ class StandardController extends Controller
                 'title' => 'sometimes|string|required|max:255',
                 'user_id' => 'sometimes|required|exists:users,id'
             ]);
-
-            if (isset($validatedData['user_id'])) {
-                $user = User::findOrFail($validatedData['user_id']);
-
-                if ($user->id !== $standard->user_id) {
-                    if ($user->SC === 1) {
-                        return response()->json([
-                            'msg' => 'User already has a standard associated'
-                        ], 400);
+            $standardTitle = $standard->title;
+            $standards = Standard::where('title',$standardTitle)->get();
+            foreach($standards as $newStandard) {
+                if (isset($validatedData['user_id'])) {
+                    $user = User::findOrFail($validatedData['user_id']);
+                    if ($user->id !== $newStandard->user_id) {
+                        if ($user->SC === 1) {
+                            return response()->json([
+                                'msg' => 'User already has a standard associated'
+                            ], 400);
+                        }
+                        if ($newStandard->user) {
+                            $newStandard->user->SC = 0;
+                            $newStandard->user->save();
+                        }
+                        $newStandard->user()->associate($user);
+                        $newStandard->SC = 1;
+                        $newStandard->save();
                     }
-                    if ($standard->user) {
-                        $standard->user->SC = 0;
-                        $standard->user->save();
-                    }
-
-                    $standard->user()->associate($user);
-                    $user->SC = 1;
-                    $user->save();
                 }
+                $newStandard->update($validatedData);
             }
 
-            $standard->update($validatedData);
-            return new StandardResource($standard);
+
+            return response()->json(['success' => 'Standard updated successfully!']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
         }
@@ -99,7 +102,12 @@ class StandardController extends Controller
                 $standard->user->SC = 0;
                 $standard->user->save();
             }
-            $standard->delete();
+            // loop on all programs based on the standard title to delete them
+            $standardTitle = $standard->title;
+            $programs = Program::all();
+            foreach($programs as $newProgram) {
+                $newProgram->standards()->where('title',$standardTitle)->delete();
+            }
             return response()->json([
                 'msg' => 'Standard deleted successfully!'
             ]);
