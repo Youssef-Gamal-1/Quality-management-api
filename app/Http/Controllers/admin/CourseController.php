@@ -17,18 +17,23 @@ class CourseController extends Controller
     use ValidateProgram;
     public function index(Program $program)
     {
-        return new CourseCollection(Course::all());
+        return new CourseCollection($program->courses);
     }
 
     public function store(StoreCourseRequest $request, Program $program)
     {
+        $validated = $request->validated();
+
         try {
-            $validated = $request->validated();
             $course = Course::create($validated);
-            $course->programs()->sync($program->id);
+
+            // Sync programs
+            $programs = $validated['programs'] ?? [$program->id];
+            $course->programs()->sync($programs);
+
             return new CourseResource($course);
         } catch (\Exception $exception) {
-            return new \Exception($exception->getMessage());
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
 
@@ -38,7 +43,7 @@ class CourseController extends Controller
             $this->validateCourse($program, $course);
             return new CourseResource($course);
         } catch (\Exception $exception) {
-            return new \Exception($exception->getMessage());
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
     public function update(UpdateCourseRequest $request, Program $program, Course $course)
@@ -46,10 +51,13 @@ class CourseController extends Controller
         try {
             $this->validateCourse($program, $course);
             $validated = $request->validated();
+            // Sync programs
+            $programs = $validated['programs'] ?? [$program->id];
+            $course->programs()->sync($programs);
             $course->update($validated);
             return new CourseResource($course);
         } catch (\Exception $exception) {
-            return new \Exception($exception->getMessage());
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
 
@@ -57,10 +65,14 @@ class CourseController extends Controller
     {
         try {
             $this->validateCourse($program, $course);
+            foreach($course->users()->get() as $user) {
+                $user->TS = false;
+            }
             $course->delete();
-            return response()->json(['success','Course deleted successfully!'], 204);
+            return response()->json(['success' => 'Course deleted successfully!'], 200);
         } catch (\Exception $exception) {
-            return new \Exception($exception->getMessage());
+            return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
 }

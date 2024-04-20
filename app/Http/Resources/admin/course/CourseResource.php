@@ -19,6 +19,7 @@ class CourseResource extends JsonResource
             'title' => $this->title,
             'code' => $this->code,
             'hours' => $this->hours,
+            'user' => $this->users()->first()->name ?? "Not associated yet!"
         ];
     }
 }

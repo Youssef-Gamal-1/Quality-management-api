@@ -27,6 +27,7 @@ class UpdateRequest extends FormRequest
             'aim' => 'sometimes|string',
             'message' => 'sometimes|string',
             'goals' => 'sometimes|string',
+            'credit' => 'boolean',
             'user_id' => 'sometimes|exists:users,id'
         ];
     }

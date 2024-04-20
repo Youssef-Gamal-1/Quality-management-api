@@ -27,6 +27,7 @@ class StoreRequest extends FormRequest
             'aim' => 'required|string',
             'message' => 'required|string',
             'goals' => 'required|string',
+            'credit' => 'boolean',
             'user_id' => 'exists:users,id'
         ];
     }

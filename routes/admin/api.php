@@ -14,6 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/programs/{program}/standards/{standard}/indicators',
         \App\Http\Controllers\admin\IndicatorController::class);
     Route::apiResource('/programs/{program}/courses',CourseController::class);
+    Route::get('/courses',\App\Http\Controllers\admin\CoursesController::class);
     Route::apiResource('/programs/{program}/courses/{course}/degrees',\App\Models\Degree::class);
     // Form special routes
     Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/forms',[

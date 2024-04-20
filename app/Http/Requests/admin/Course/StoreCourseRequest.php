@@ -25,6 +25,7 @@ class StoreCourseRequest extends FormRequest
             'title' => 'required|string|max:255',
             'code' => 'required|string|max:255,unique:courses,code',
             'hours' => 'required|numeric|min:2|max:3',
+            'programs' => 'array'
         ];
     }
 }

@@ -31,7 +31,7 @@ class UserController extends Controller
         unset($data['confirm-password']);
         $requestStandard = null;
         $program = null;
-        $programs = null;
+        $courses = null;
 
         if(isset($data['standard_id']))
         {
@@ -55,10 +55,10 @@ class UserController extends Controller
             }
             unset($data['program_id']);
         }
-        if(isset($data['programs']))
+        if(isset($data['courses']))
         {
-            $programs = $data['programs'];
-            unset($data['programs']);
+            $courses = $data['courses'];
+            unset($data['courses']);
         }
 
         $user = User::create($data);
@@ -72,11 +72,11 @@ class UserController extends Controller
             }
         };
         if($program) $user->programs()->sync($program->id);
-        if($programs)
+        if($courses)
         {
-            foreach($programs as $programId)
+            foreach($courses as $courseId)
             {
-                $user->programs()->attach($programId);
+                $user->courses()->sync($courseId);
             }
         }
 

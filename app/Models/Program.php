@@ -14,7 +14,8 @@ class Program extends Model
         'aim',
         'message',
         'code',
-        'goals'
+        'goals',
+        'credit'
     ];
 
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

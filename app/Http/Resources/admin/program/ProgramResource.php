@@ -23,6 +23,7 @@ class ProgramResource extends JsonResource
               'aim' => $this->aim,
               'code' => $this->code,
               'goals' => $this->goals,
+              'credit' => $this->credit,
               'program_coordinator' => $program->users()->first()->name ?? 'Not associated yet!'
         ];
         return $data;

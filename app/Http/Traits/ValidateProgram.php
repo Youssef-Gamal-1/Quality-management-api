@@ -17,9 +17,7 @@ trait ValidateProgram
     }
     public function validateCourse(Program $program, Course $course)
     {
-        if($program->id !== $course->program->id)
-        {
-            throw new \Exception('Standard does not belong to the specified program.', 404);
-        }
+        $course->programs()->findOrFail($program->id);
     }
+
 }

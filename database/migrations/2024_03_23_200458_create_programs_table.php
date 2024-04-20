@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('message');
             $table->text('aim');
             $table->text('goals');
+            $table->boolean('credit')->default(false);
             $table->timestamps();
         });
     }
