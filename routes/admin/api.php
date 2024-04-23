@@ -10,7 +10,7 @@ Route::post('/login',[AuthController::class,'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users',\App\Http\Controllers\admin\UserController::class);
     Route::apiResource('/programs',\App\Http\Controllers\admin\ProgramController::class);
-
+    Route::get('/dashboard',\App\Http\Controllers\admin\DashboardController::class);
     // Group all program sub-resources
     Route::prefix('/programs/{program}')->group(function(){
         Route::apiResource('/standards',\App\Http\Controllers\admin\StandardController::class);

@@ -26,13 +26,14 @@ class Standard extends Model
         $indicatorsRatio = [];
         $numberOfFiles = 0;
         foreach($standardIndicators as $indicator){
-            $indicatorsRatio[$indicator->title] = $indicator->getFinishedReportsRatio();
-            $standardIndicatorsFinished += $indicatorsRatio[$indicator->title];
+            $indicatorsFinishedRatio[$indicator->title] = $indicator->getFinishedReportsRatio();
+            $standardIndicatorsFinished += $indicatorsFinishedRatio[$indicator->title];
             $numberOfFiles += $indicator->forms()->count();
         }
         $standardRatio = $standardIndicatorsFinished / $numberOfIndicators;
         $standardCoordinator = $this->user ?? 'Not associated yet!';
         return [
+            'title' => $this->title,
             'Standard Coordinator' => $standardCoordinator,
             'IndicatorsRatio' => $indicatorsRatio,
             'StandardRatio' => $standardRatio,

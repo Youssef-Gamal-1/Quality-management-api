@@ -11,7 +11,7 @@ class Indicator extends Model
     protected $fillable = ['title','number','number_of_forms','standard_id'];
     // function to calculate the finished reports inside the indicator
     // It will help in generating reports
-    function getFinishedReportsRatio(): float|int
+    public function getFinishedReportsRatio(): float|int
     {
         $numberOfReports = $this->forms()->count();
         if ($numberOfReports === 0) {

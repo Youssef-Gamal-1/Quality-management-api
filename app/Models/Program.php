@@ -36,6 +36,7 @@ class Program extends Model
         $programRatio = $programRatio / $numberOfStandards;
         $programCoordinator = $this->users()->where('PC',true)->first() ?? 'Not associated yet!';
         return [
+            'title' => $this->title,
             'Program Coordinator' => $programCoordinator,
             'programRatio' => $programRatio,
             'standards' => $standardsInfo,
