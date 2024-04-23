@@ -84,4 +84,10 @@ class ProgramController extends Controller
             'msg' => 'Program deleted successfully!'
         ]);
     }
+
+    // function to get report
+    function getReport(Program $program): \Illuminate\Http\JsonResponse
+    {
+        return response()->json($program->getInfo());
+    }
 }

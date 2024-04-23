@@ -20,7 +20,7 @@ class StoreFormRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'type' => 'string|max:20'
+            'type' => 'required|string|max:20',
         ];
     }
 }

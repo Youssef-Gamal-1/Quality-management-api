@@ -35,7 +35,7 @@ class FormController extends Controller
 
             return new FormResource($indicator->forms()->latest()->first());
         } catch (\Exception $exception) {
-            return response()->json(['error' => $exception],422);
+            return response()->json(['error' => $exception->getMessage()],422);
         }
     }
 

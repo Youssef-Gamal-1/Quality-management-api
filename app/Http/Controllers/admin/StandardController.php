@@ -10,6 +10,7 @@ use App\Models\Program;
 use App\Models\Standard;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 
 class StandardController extends Controller
 {
@@ -115,7 +116,18 @@ class StandardController extends Controller
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-    private function validateStandard(Program $program, Standard $standard)
+
+    public function getReport(Program $program, Standard $standard): \Illuminate\Http\JsonResponse
+    {
+        try{
+            $this->validateStandard($program, $standard);
+            return response()->json($standard->getStandardInfo());
+        } catch (Exception $e) {
+            return response()->json(['fail' => $e->getMessage()], 400);
+        }
+
+    }
+    private function validateStandard(Program $program, Standard $standard): void
     {
         if($program->id !== $standard->program->id)
         {

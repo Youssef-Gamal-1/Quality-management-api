@@ -18,6 +18,33 @@ class Program extends Model
         'credit'
     ];
 
+    public function getInfo(): array
+    {
+        $programStandards = $this->standards()->get();
+        $standardsInfo = [];
+        $programRatio = 0;
+        $programFilesNumber = 0;
+        $programUploadedFiles = 0;
+        $numberOfStandards = 0;
+        foreach($programStandards as $standard){
+            $standardsInfo[$standard->title] = $standard->getStandardInfo();
+            $programFilesNumber += $standardsInfo[$standard->title]['NumberOfFiles'];
+            $programUploadedFiles += $standardsInfo[$standard->title]['UploadedFiles'];
+            $programRatio += $standardsInfo[$standard->title]['StandardRatio'];
+            $numberOfStandards++;
+        }
+        $programRatio = $programRatio / $numberOfStandards;
+        $programCoordinator = $this->users()->where('PC',true)->first() ?? 'Not associated yet!';
+        return [
+            'Program Coordinator' => $programCoordinator,
+            'programRatio' => $programRatio,
+            'standards' => $standardsInfo,
+            'UploadedFiles' => $programUploadedFiles,
+            'NumberOfFiles' => $programFilesNumber,
+        ];
+    }
+
+    // Model Relationships
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(User::class,'program_user');
