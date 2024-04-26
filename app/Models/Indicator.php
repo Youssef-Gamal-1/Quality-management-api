@@ -17,6 +17,7 @@ class Indicator extends Model
         if ($numberOfReports === 0) {
             return 0;
         }
+        // uploaded and accepted files within the indicator
         $numberOfFinishedReports = $this->forms()->where('status',true)->count();
         return $numberOfFinishedReports / $numberOfReports * 100;
     }

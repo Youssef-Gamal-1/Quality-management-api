@@ -35,10 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
             });
         });
         Route::apiResource('/courses',CourseController::class);
-        Route::get('/courses',\App\Http\Controllers\admin\CoursesController::class);
         Route::apiResource('/courses/{course}/degrees',\App\Models\Degree::class)
             ->only(['index','destroy']);
     });
+    // Invokable class to get all courses of the system
+    Route::get('/courses',\App\Http\Controllers\admin\CoursesController::class);
     // Form download routes
     Route::get('/download/file/{id}', [\App\Http\Controllers\admin\FormController::class, 'download']);
 });

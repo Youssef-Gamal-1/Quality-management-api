@@ -13,27 +13,32 @@ class DashboardController extends Controller
 {
     public function __invoke()
     {
-        $latestUsers = User::where('QM', false)->latest()->take(3)->get();
-        $notActivatedUsers = User::where('activated', false)->latest()->take(3)->get();
+        $latestUsers = User::select('id','name')
+            ->where('QM', false)
+            ->latest()
+            ->take(3)
+            ->get();
+        $notActivatedUsers = User::select('id','name')
+            ->where('activated', false)
+            ->latest()
+            ->take(3)
+            ->get();
         $programs = Program::all();
-
         $programsInfo = [];
         foreach ($programs as $program) {
-            $programsInfo[$program->title] = $program->getInfo(); // Make sure getInfo() method exists and returns appropriate data
+            $programsInfo[$program->title] = $program->getInfo();
         }
-
         // Count files
         $numberOfFiles = Form::count();
         $numberOfUploadedFiles = Form::whereNotNull('value')->count();
         $numberOfAcceptedFiles = Form::where('status', true)->count();
-
         // Calculate ratios
         $uploadedFilesRatio = ($numberOfFiles > 0) ? ($numberOfUploadedFiles / $numberOfFiles * 100) : 0;
         $acceptedFilesRatio = ($numberOfFiles > 0) ? ($numberOfAcceptedFiles / $numberOfFiles * 100) : 0;
 
         return response()->json([
-            'latestUsers' => new UserCollection($latestUsers),
-            'notActivatedUsers' => new UserCollection($notActivatedUsers),
+            'latestUsers' => $latestUsers,
+            'notActivatedUsers' => $notActivatedUsers,
             'programsInfo' => $programsInfo,
             'acceptedFilesRatio' => $acceptedFilesRatio,
             'uploadedFilesRatio' => $uploadedFilesRatio,

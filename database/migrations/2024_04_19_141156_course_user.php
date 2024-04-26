@@ -11,9 +11,11 @@ return new class extends Migration
         Schema::create('course_user', function (Blueprint $table) {
             $table->foreignIdFor(\App\Models\User::class)
                 ->constrained()
+                ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Course::class)
                 ->constrained()
+                ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
     }

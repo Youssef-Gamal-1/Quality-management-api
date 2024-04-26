@@ -25,8 +25,8 @@ class CourseController extends Controller
         $validated = $request->validated();
 
         try {
-            $course = Course::create($validated);
 
+            $course = $program->courses()->create($validated);
             // Sync programs
             $programs = $validated['programs'] ?? [$program->id];
             $course->programs()->sync($programs);

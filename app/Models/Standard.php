@@ -23,22 +23,24 @@ class Standard extends Model
         $standardIndicators = $this->indicators()->get();
 
         $standardIndicatorsFinished = 0;
-        $indicatorsRatio = [];
+        $indicatorsFinishedRatio = [];
         $numberOfFiles = 0;
+        $latestFiles = [];
         foreach($standardIndicators as $indicator){
-            $indicatorsFinishedRatio[$indicator->title] = $indicator->getFinishedReportsRatio();
-            $standardIndicatorsFinished += $indicatorsFinishedRatio[$indicator->title];
+            $indicatorsFinishedRatio[$indicator->id] = $indicator->getFinishedReportsRatio();
+            $standardIndicatorsFinished += $indicatorsFinishedRatio[$indicator->id];
             $numberOfFiles += $indicator->forms()->count();
         }
         $standardRatio = $standardIndicatorsFinished / $numberOfIndicators;
-        $standardCoordinator = $this->user ?? 'Not associated yet!';
+        $standardCoordinator = $this->user->name ?? 'Not associated yet!';
         return [
-            'title' => $this->title,
-            'Standard Coordinator' => $standardCoordinator,
-            'IndicatorsRatio' => $indicatorsRatio,
-            'StandardRatio' => $standardRatio,
-            'UploadedFiles' => $standardIndicatorsFinished,
-            'NumberOfFiles' => $numberOfFiles
+            'title' => $this->title, // standard title
+            'program' => $this->program->title ?? 'Not associated yet!',
+            'Standard Coordinator' => $standardCoordinator, // standard coordinator name
+            'IndicatorsRatio' => $indicatorsFinishedRatio, // indicators ratios
+            'StandardRatio' => $standardRatio, // standard ratio
+            'AcceptedFiles' => $standardIndicatorsFinished, // accepted files in the standard
+            'NumberOfFiles' => $numberOfFiles // total number of files within standard
         ];
     }
 

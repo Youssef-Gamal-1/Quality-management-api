@@ -21,23 +21,38 @@ class Program extends Model
     public function getInfo(): array
     {
         $programStandards = $this->standards()->get();
+        // Initialize variables
         $standardsInfo = [];
         $programRatio = 0;
         $programFilesNumber = 0;
         $programUploadedFiles = 0;
-        $numberOfStandards = 0;
-        foreach($programStandards as $standard){
-            $standardsInfo[$standard->title] = $standard->getStandardInfo();
-            $programFilesNumber += $standardsInfo[$standard->title]['NumberOfFiles'];
-            $programUploadedFiles += $standardsInfo[$standard->title]['UploadedFiles'];
-            $programRatio += $standardsInfo[$standard->title]['StandardRatio'];
-            $numberOfStandards++;
+        $numberOfStandards = count($programStandards); // Get the count of standards directly
+        $programCoordinator = $this->users()->where('PC', true)->first();
+        $numberOfTeachers = $this->users()->where('TS', true)->count();
+
+        if ($numberOfStandards !== 0) {
+            foreach ($programStandards as $standard) {
+                $standardInfo = $standard->getStandardInfo();
+                // Skip if standard info is zero
+                if ($standardInfo === 0) {
+                    continue;
+                }
+                $standardsInfo[$standard->title] = $standardInfo;
+                // Aggregate file numbers
+                $programFilesNumber += $standardInfo['NumberOfFiles'];
+                $programUploadedFiles += $standardInfo['AcceptedFiles'];
+                $programRatio += $standardInfo['StandardRatio'];
+            }
+            // Calculate program ratio
+            $programRatio /= $numberOfStandards;
         }
-        $programRatio = $programRatio / $numberOfStandards;
-        $programCoordinator = $this->users()->where('PC',true)->first() ?? 'Not associated yet!';
+        // Extract program coordinator name
+        $programCoordinatorName = $programCoordinator ? $programCoordinator->name : 'Not associated yet!';
+
         return [
             'title' => $this->title,
-            'Program Coordinator' => $programCoordinator,
+            'Program Coordinator' => $programCoordinatorName,
+            'numberOfTeachers' => $numberOfTeachers,
             'programRatio' => $programRatio,
             'standards' => $standardsInfo,
             'UploadedFiles' => $programUploadedFiles,

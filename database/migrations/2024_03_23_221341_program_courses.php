@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('program_courses',function(Blueprint $table){
             $table->foreignIdFor(\App\Models\Program::class)
                 ->constrained()
+                ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Course::class)
                 ->constrained()

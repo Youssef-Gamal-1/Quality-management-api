@@ -32,7 +32,7 @@ class UserController extends Controller
         $requestStandard = null;
         $program = null;
         $courses = null;
-
+        $programs = [];
         if(isset($data['standard_id']))
         {
             $requestStandard = Standard::findOrFail($data['standard_id']);
@@ -60,6 +60,11 @@ class UserController extends Controller
             $courses = $data['courses'];
             unset($data['courses']);
         }
+        if(isset($data['programs']))
+        {
+            $programs[] = $data['programs'];
+            unset($data['programs']);
+        }
 
         $user = User::create($data);
         if($requestStandard)
@@ -77,9 +82,17 @@ class UserController extends Controller
             foreach($courses as $courseId)
             {
                 $user->courses()->sync($courseId);
+                $user->TS = true;
+                $user->save();
             }
         }
-
+        if(!empty($programs))
+        {
+            foreach($programs as $programID)
+            {
+                $user->programs()->sync($programID);
+            }
+        }
         return response()->json([
             'success' => 'User created successfully',
             'user' => new UserResource($user)
