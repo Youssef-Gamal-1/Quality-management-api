@@ -27,6 +27,7 @@ class StoreRequest extends FormRequest
             'email' => 'required|email|unique:users,email',
             'username' => 'required|max:255|min:5|unique:users,username',
             'password' => 'required|max:255',
+            'activated' => 'boolean',
             'confirm-password' => 'required|same:password',
             'phone'=> 'string|max:11|min:11' ,
             'QM' => 'boolean',
@@ -37,7 +38,6 @@ class StoreRequest extends FormRequest
             'QU' => 'boolean',
             'EC' => 'boolean',
             'TS' => 'boolean',
-            'courses' => 'required_if:TS,true',
             'programs' => 'required_if:Ts,true'
         ];
     }

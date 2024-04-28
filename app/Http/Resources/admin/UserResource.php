@@ -48,6 +48,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'phone' => $this->phone,
             'role' => empty($role) ? 'user' : implode(' | ', $role),
+            'activated' => $this->activated
         ];
     }
 }

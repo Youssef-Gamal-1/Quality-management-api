@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasOne(Standard::class);
     }
 
+    public function forms(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Form::class,'users_forms');
+    }
+
     public function scopeFilter(Builder | QueryBuilder $query, array $filters)
     {
         return $query->when(

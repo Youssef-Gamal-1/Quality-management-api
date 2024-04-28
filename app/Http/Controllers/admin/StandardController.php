@@ -65,30 +65,30 @@ class StandardController extends Controller
                 'title' => 'sometimes|string|required|max:255',
                 'user_id' => 'sometimes|required|exists:users,id'
             ]);
+            // check user
+            $user = null;
+            if(isset($validatedData['user_id']))
+            {
+                $user = User::findOrFail($validatedData['user_id']);
+                if($user->SC === true)
+                {
+                    return response()->json(['fail'=>'User already associated with a standard!'],402);
+                }
+                // remove standard coordinator role from the current standard coordinator
+                $standard->user()->update(['SC' => false]);
+            }
             $standardTitle = $standard->title;
             $standards = Standard::where('title',$standardTitle)->get();
-            foreach($standards as $newStandard) {
-                if (isset($validatedData['user_id'])) {
-                    $user = User::findOrFail($validatedData['user_id']);
-                    if ($user->id !== $newStandard->user_id) {
-                        if ($user->SC === 1) {
-                            return response()->json([
-                                'msg' => 'User already has a standard associated'
-                            ], 400);
-                        }
-                        if ($newStandard->user) {
-                            $newStandard->user->SC = 0;
-                            $newStandard->user->save();
-                        }
-                        $newStandard->user()->associate($user);
-                        $newStandard->SC = 1;
-                        $newStandard->save();
-                    }
-                }
-                $newStandard->update($validatedData);
+            // loop over all standards to update them
+            foreach($standards as $reqStandard)
+            {
+                $reqStandard->update($validatedData);
             }
-
-
+            if($user)
+            {
+                $user->SC = 1;
+                $user->save();
+            }
             return response()->json(['success' => 'Standard updated successfully!']);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

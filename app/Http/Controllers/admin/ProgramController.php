@@ -66,18 +66,23 @@ class ProgramController extends Controller
                     'msg' => 'User already associated with a program!'
                 ]);
             }
+            $program->users()->where('PC',true)->first()->update(['PC'=>false]);
+            $program->users()->sync($validUser->id);
+            $validUser->PC = 1;
+            $validUser->save();
+            unset($data['user_id']);
         }
-
-        $program->update($data);
-        if($validUser !== '')
+        if(!empty($data))
         {
-            $program->users()->sync([$validUser->id]);
+            $program->update($data);
         }
         return new ProgramResource($program);
     }
 
     public function destroy(Program $program)
     {
+        $user = $program->users()->where('PC',true)->first();
+        $user->PC = false;
         $program->delete();
 
         return response()->json([
@@ -86,7 +91,7 @@ class ProgramController extends Controller
     }
 
     // function to get report
-    function getReport(Program $program): \Illuminate\Http\JsonResponse
+    public function getReport(Program $program): \Illuminate\Http\JsonResponse
     {
         return response()->json($program->getInfo());
     }

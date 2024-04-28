@@ -14,12 +14,14 @@ class CourseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $teachers = $this->users()->pluck('name')->implode(', ') ?? "Not associated yet!";
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'code' => $this->code,
             'hours' => $this->hours,
-            'user' => $this->users()->first()->name ?? "Not associated yet!"
+            'doctor' => $teachers
         ];
     }
 }

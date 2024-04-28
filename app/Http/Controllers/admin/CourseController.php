@@ -10,6 +10,7 @@ use App\Http\Resources\admin\course\CourseResource;
 use App\Http\Traits\ValidateProgram;
 use App\Models\Course;
 use App\Models\Program;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -25,17 +26,26 @@ class CourseController extends Controller
         $validated = $request->validated();
 
         try {
-
             $course = $program->courses()->create($validated);
+            // Sync users
+            if(isset($validated['users'])) {
+                $userIds = $validated['users'];
+                $users = User::whereIn('id', $userIds)->get();
+                foreach($users as $user) {
+                    $user->update(['TS' => true]);
+                    $user->courses()->syncWithoutDetaching([$course->id]);
+                }
+            }
             // Sync programs
             $programs = $validated['programs'] ?? [$program->id];
             $course->programs()->sync($programs);
 
             return new CourseResource($course);
         } catch (\Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 500);
+            return response()->json(['error' => 'Failed to store course.'], 500);
         }
     }
+
 
     public function show(Program $program, Course $course)
     {
@@ -50,16 +60,23 @@ class CourseController extends Controller
     {
         try {
             $this->validateCourse($program, $course);
+
             $validated = $request->validated();
+
+            // Sync users
+            $course->users()->sync($validated['users']);
             // Sync programs
             $programs = $validated['programs'] ?? [$program->id];
             $course->programs()->sync($programs);
+
             $course->update($validated);
+
             return new CourseResource($course);
         } catch (\Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 500);
         }
     }
+
 
     public function destroy(Program $program, Course $course)
     {

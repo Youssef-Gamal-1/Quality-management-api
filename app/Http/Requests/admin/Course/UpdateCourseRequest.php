@@ -26,6 +26,7 @@ class UpdateCourseRequest extends FormRequest
             'code' => 'sometimes|string|max:255,unique:courses,code',
             'hours' => 'sometimes|numeric|min:2|max:3',
             'programs' => 'sometimes|array',
+            'users' => 'sometimes|array'
         ];
     }
 }

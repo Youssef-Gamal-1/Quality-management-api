@@ -34,6 +34,7 @@ class Standard extends Model
         $standardRatio = $standardIndicatorsFinished / $numberOfIndicators;
         $standardCoordinator = $this->user->name ?? 'Not associated yet!';
         return [
+            'id' => $this->id,
             'title' => $this->title, // standard title
             'program' => $this->program->title ?? 'Not associated yet!',
             'Standard Coordinator' => $standardCoordinator, // standard coordinator name

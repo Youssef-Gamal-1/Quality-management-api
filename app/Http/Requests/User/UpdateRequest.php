@@ -27,14 +27,18 @@ class UpdateRequest extends FormRequest
             'email' => 'sometimes|email|unique:users,email',
             'username' => 'sometimes|max:255|min:5|unique:users,username',
             'password' => 'sometimes|max:255',
-            'confirm-password' => 'sometimes|same:password',
+            'confirm-password' => 'required_with:password|same:password|max:255',
             'phone'=> 'string|max:11|min:11' ,
+            'activated' => 'sometimes|boolean',
             'QM' => 'boolean',
             'SC' => 'boolean',
+            'standard_id' => 'required_if:SC,true',
             'PC' => 'boolean',
+            'program_id' => 'required_if:PC,true',
             'QU' => 'boolean',
             'EC' => 'boolean',
             'TS' => 'boolean',
+            'programs' => 'required_if:Ts,true'
         ];
     }
 }

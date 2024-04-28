@@ -15,7 +15,6 @@ class ProgramResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $program = Program::find($this->id);
         $data = [
               'id' => $this->id,
               'title' => $this->title,
@@ -24,7 +23,7 @@ class ProgramResource extends JsonResource
               'code' => $this->code,
               'goals' => $this->goals,
               'credit' => $this->credit,
-              'program_coordinator' => $program->users()->first()->name ?? 'Not associated yet!'
+              'program_coordinator' => $this->users()->where('PC',true)->first()->name ?? 'Not associated yet!'
         ];
         return $data;
     }

@@ -28,6 +28,10 @@ class Form extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'users_forms');
+    }
     protected static function boot()
     {
         parent::boot();

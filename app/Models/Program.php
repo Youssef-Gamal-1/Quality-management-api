@@ -37,7 +37,11 @@ class Program extends Model
                 if ($standardInfo === 0) {
                     continue;
                 }
-                $standardsInfo[$standard->title] = $standardInfo;
+                $standardsInfo[$standard->title] = [
+                    'id' => $standardInfo['id'],
+                    'title' => $standardInfo['title'],
+                    'StandardRatio' => $standardInfo['StandardRatio']
+                ];
                 // Aggregate file numbers
                 $programFilesNumber += $standardInfo['NumberOfFiles'];
                 $programUploadedFiles += $standardInfo['AcceptedFiles'];
