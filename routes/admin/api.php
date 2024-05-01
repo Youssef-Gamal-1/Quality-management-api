@@ -5,7 +5,7 @@ use App\Http\Controllers\admin\CourseController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/login',[AuthController::class,'login']);
+Route::post('/login',[AuthController::class,'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users',\App\Http\Controllers\admin\UserController::class);
