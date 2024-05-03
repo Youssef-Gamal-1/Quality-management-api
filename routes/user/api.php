@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use \App\Http\Controllers\user\auth\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function() {
+    Route::apiResource('/users',\App\Http\Controllers\user\UserController::class)
+        ->except('store');
+    Route::apiResource('/programs',\App\Http\Controllers\user\ProgramController::class)
+        ->except(['store','destroy']);
 });
-Route::get('/',function(){
-    return "Hello world";
-});
+

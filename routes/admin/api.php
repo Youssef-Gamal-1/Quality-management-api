@@ -3,11 +3,12 @@
 use App\Http\Controllers\admin\auth\AuthController;
 use App\Http\Controllers\admin\CourseController;
 use Illuminate\Support\Facades\Route;
+//use App\Http\Middleware\Admin;
 
 
 Route::post('/login',[AuthController::class,'login'])->name('login');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum',\App\Http\Middleware\Admin::class])->group(function () {
     Route::apiResource('/users',\App\Http\Controllers\admin\UserController::class);
     Route::apiResource('/users/{user}/permissions',\App\Http\Controllers\admin\UserPermissionsController::class)
         ->only(['index','store','destroy']);

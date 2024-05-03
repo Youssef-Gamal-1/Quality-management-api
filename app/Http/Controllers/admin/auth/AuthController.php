@@ -31,8 +31,8 @@ class AuthController extends Controller
         }
         if($user->QM !== 1 || !Hash::check($request->password,$user->password)){
             return response()->json([
-                'msg' => 'Invalid Credentials'
-            ],422);
+                'msg' => 'Unauthorized!'
+            ],401);
         }
 
         return response()->json([

@@ -56,6 +56,14 @@ class User extends Authenticatable
     ];
 
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function (User $user) {
+            $user->tokens()->delete();
+        });
+    }
+
     public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
        return $this->belongsToMany(Permission::class,'user_file_permission')
