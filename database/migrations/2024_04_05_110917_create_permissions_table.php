@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('resource');
-            $table->string('action');
+            $table->string('name');
             $table->dateTime('grant_date');
             $table->dateTime('expiration_date');
             $table->timestamps();

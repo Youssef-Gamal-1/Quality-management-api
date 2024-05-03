@@ -18,6 +18,12 @@ class Form extends Model
         'type'
     ];
 
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class,'user_file_permission')
+            ->withPivot('user_id');
+    }
+
     public function indicator(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Indicator::class);

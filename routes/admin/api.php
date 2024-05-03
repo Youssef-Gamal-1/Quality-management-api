@@ -9,6 +9,8 @@ Route::post('/login',[AuthController::class,'login'])->name('login');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users',\App\Http\Controllers\admin\UserController::class);
+    Route::apiResource('/users/{user}/permissions',\App\Http\Controllers\admin\UserPermissionsController::class)
+        ->only(['index','store','destroy']);
     Route::apiResource('/programs',\App\Http\Controllers\admin\ProgramController::class);
     Route::get('/dashboard',\App\Http\Controllers\admin\DashboardController::class);
     // Group all program sub-resources

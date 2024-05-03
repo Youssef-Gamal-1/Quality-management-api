@@ -46,6 +46,11 @@ class Standard extends Model
     }
 
     // Model Relationships
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class,'user_file_permission')
+            ->withPivot('user_id');
+    }
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);

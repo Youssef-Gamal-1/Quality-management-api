@@ -55,6 +55,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+       return $this->belongsToMany(Permission::class,'user_file_permission')
+           ->withPivot('standard_id','form_id');
+    }
+    public function files(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Form::class,'user_file_permission');
+    }
+
+    public function standards(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Standard::class,'user_file_permission');
+    }
+
     public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Program::class,'program_user');
