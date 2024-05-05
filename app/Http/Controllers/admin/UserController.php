@@ -60,16 +60,17 @@ class UserController extends Controller
             unset($data['confirm-password']);
         }
         $user->update($data);
-        if($user->TS === false)
+        if(!$user->TS)
         {
             $user->courses()->sync([]);
         }
-        if($user->SC === false)
+        if(!$user->SC)
         {
             $standards = Standard::where('user_id',$user->id)->get();
             foreach($standards as $standard)
             {
-                $standard->update(['user_id' => null]);
+                $standard->user_id = null;
+                $standard->save();
             }
         }
         $this->attachRelationships($user, $data);

@@ -29,7 +29,7 @@ class StoreRequest extends FormRequest
             'password' => 'required|max:255',
             'activated' => 'boolean',
             'confirm-password' => 'required|same:password',
-            'phone'=> 'string|max:11|min:11' ,
+            'phone'=> 'string|max:11|min:11|unique:users,phone' ,
             'QM' => 'boolean',
             'SC' => 'boolean',
             'standard_id' => 'required_if:SC,true',

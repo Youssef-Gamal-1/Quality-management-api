@@ -7,20 +7,25 @@ use App\Http\Requests\Program\UpdateRequest;
 use App\Http\Resources\admin\program\ProgramCollection;
 use App\Http\Resources\admin\program\ProgramResource;
 use App\Models\Program;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
+    public function __construct()
+    {
+         $this->authorizeResource(Program::class,'program');
+    }
+
     public function index()
     {
-        $this->authorize('viewAny',auth()->user());
         $programs = Program::all();
 
         return new ProgramCollection($programs);
     }
     public function show(Program $program)
     {
-        $this->authorize('view', $program);
+//        $this->authorize('view', $program);
 
         return new ProgramResource($program);
     }

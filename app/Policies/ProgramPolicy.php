@@ -10,7 +10,7 @@ class ProgramPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->QM || $user->EC;
+        return $user->QM;
     }
     public function view(User $user, Program $program): bool
     {

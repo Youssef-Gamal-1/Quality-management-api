@@ -23,5 +23,12 @@ Route::middleware('auth:sanctum')->group(function() {
         ->except('store');
     Route::apiResource('/programs',\App\Http\Controllers\user\ProgramController::class)
         ->except(['store','destroy']);
+    Route::apiResource('/programs/{program}/standards',\App\Http\Controllers\user\StandardController::class);
+    Route::apiResource('/programs/{program}/standards/{standard}/indicators',
+        \App\Http\Controllers\user\IndicatorController::class)
+        ->only(['index','show']);
+    Route::put('/programs/{program}/standards/{standard}/indicators/{indicator}/forms/{form}',
+        [\App\Http\Controllers\user\FormController::class,'update']);
+
 });
 
