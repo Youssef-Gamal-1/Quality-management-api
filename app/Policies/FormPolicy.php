@@ -11,18 +11,11 @@ use Illuminate\Auth\Access\Response;
 
 class FormPolicy
 {
-    public function __construct(
-        private $program,
-        private $standard
-    )
-    {
-        $this->program = request()->route()->parameter("program");
-        $this->standard = request()->route()->parameter("standard");
-        $this->indicator = request()->route()->parameter("indicator");
-    }
 
     public function update(User $user, Form $form): bool
     {
+        $this->program = request()->route()->parameter("program");
+        $this->standard = request()->route()->parameter("standard");
         return $user->QM
             || ($user->programs()->where('id',$this->program->id)->exists() && $user->PC === 1)
             || $this->standard->user_id === $user->id

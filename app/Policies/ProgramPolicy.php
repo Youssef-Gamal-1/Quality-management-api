@@ -10,15 +10,16 @@ class ProgramPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->QM;
+        return $user->QM
+            || $user->PC
+            || $user->SC
+            || $user->EC;
     }
     public function view(User $user, Program $program): bool
     {
-        $authorized = $user->QM;
-        if($user->PC || $user->TS) {
-            $authorized = $user->programs()->where('id',$program->id)->exists();
-        }
-        return $authorized;
+        return $user->QM
+            || $user->programs()->where('id',$program->id)->exists()
+            || $user->standard()->where('user_id',$user->id)->exists();
     }
 
     public function update(User $user, Program $program): bool

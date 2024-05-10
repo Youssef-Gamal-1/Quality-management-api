@@ -26,7 +26,7 @@ class IndicatorController extends Controller
         }
         $indicators = $standard->indicators;
 
-        return new IndicatorCollection($indicators);
+        return response()->json($indicators, 200);
     }
     public function show(Program $program, Standard $standard, Indicator $indicator)
     {

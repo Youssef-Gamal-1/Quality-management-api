@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('standards', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('type')->default('program');
             $table->foreignIdFor(\App\Models\User::class)->nullable()
                 ->constrained()->onDelete('set null');
             $table->foreignIdFor(\App\Models\Program::class)

@@ -29,28 +29,52 @@ class FormController extends Controller
         $validatedData = $request->validate ([
             "value" => "sometimes|max:255|min:3",
             "status" => "sometimes|boolean",
-            "path" => "sometimes|file|mimes:jpeg,jpg,png,docx,pdf|max:2048",
+            "user_id" => "required|exists:users,id"
         ]);
+
         $indicator = $standard->indicators()->findOrFail($indicator->id);
         $form = $indicator->forms()->findOrFail($form->id);
-        if (!$validatedData['status']) {
-            if ($form->path !== null && $form->path !== '') {
-                Storage::disk('public')->delete($form->path);
-            }
-            $validatedData['path'] = null;
+        // handle refusing the file
+        if (isset($validatedData['status']) && !$validatedData['status']) {
             $validatedData['value'] = null;
-        } else {
-            if($request->hasFile('path'))
-            {
-                $file = $request->file('path');
-                $path = $file->store('indicators', 'public');
-                $validatedData['path'] = $path;
-            }
         }
 
         $form->update($validatedData);
-
+        // assign form to user
+        $form->users()->sync($validatedData['user_id']);
         return new FormResource($form);
     }
 
+    public function uploadFile(Request $request, Program $program, Standard $standard ,Indicator $indicator, Form $form)
+    {
+        if($program->id !== $standard->program->id)
+        {
+            abort(404);
+        }
+        $validatedData = $request->validate ([
+            "path" => "required|file|mimes:jpeg,jpg,png,docx,pdf|max:2048",
+            "user_id" => "required|exists:users,id",
+            "status" => "sometimes|boolean",
+        ]);
+        $indicator = $standard->indicators()->findOrFail($indicator->id);
+        $form = $indicator->forms()->findOrFail($form->id);
+        // handle refusing the file
+        if ($form->path !== null && $form->path !== '') {
+            Storage::disk('public')->delete($form->path);
+        }
+        if (isset($validatedData['status']) && !$validatedData['status']) {
+            $validatedData['path'] = null;
+        }
+        if($request->hasFile('path'))
+        {
+            $file = $request->file('path');
+            $path = $file->store('indicators', 'public');
+            $validatedData['path'] = $path;
+        }
+
+        $form->update($validatedData);
+        // assign form to user
+        $form->users()->sync($validatedData['user_id']);
+        return new FormResource($form);
+    }
 }

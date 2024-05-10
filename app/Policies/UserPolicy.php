@@ -27,5 +27,10 @@ class UserPolicy
         return $model->id === $user->id;
     }
 
+    public function authorizeUser(User $user, User $model): bool
+    {
+        return $model->id === $user->id;
+    }
+
 
 }
