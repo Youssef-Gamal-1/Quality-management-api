@@ -30,6 +30,9 @@ Route::middleware('auth:sanctum')->group(function() {
         [\App\Http\Controllers\user\FormController::class,'uploadFile']);
     // courses route
     Route::get('/programs/{program}/courses',[\App\Http\Controllers\user\CourseController::class,'index']);
+    // Course Degrees
+    Route::apiResource('/programs/{program}/courses/{course}/degrees',\App\Http\Controllers\user\CourseDegreeController::class)
+        ->only(['index','store','destroy']);
     // user logout
     Route::post('/logout/{user}', [AuthController::class, 'logout']);
 });

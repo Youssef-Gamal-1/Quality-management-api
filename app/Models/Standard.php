@@ -10,7 +10,7 @@ class Standard extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title','user_id','program_id'];
+    protected $fillable = ['title','user_id','program_id','type'];
 
     // function to calculate the finished reports inside the standard
     // It will help in generating reports
