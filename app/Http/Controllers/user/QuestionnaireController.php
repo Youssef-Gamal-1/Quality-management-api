@@ -3,47 +3,53 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 
 class QuestionnaireController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $questionnaires = Questionnaire::all();
+
+        return response()->json([
+            'data' => $questionnaires
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'title' => 'required|string|max:255'
+        ]);
+
+        $questionnaire = Questionnaire::create($validated);
+
+        return response()->json([
+            'success' => 'Questionnaire Created Successfully!',
+            'data' => $questionnaire
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Questionnaire $questionnaire)
     {
-        //
-    }
+        $validated = $request->validate([
+            'title' => 'required|string|max:255'
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        $questionnaire->update($validated);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+        return response()->json([
+            'success' => 'Questionnaire Updated Successfully!',
+            'data' => $questionnaire
+        ], 200);
+    }
+    public function destroy(Questionnaire $questionnaire)
     {
-        //
+        $questionnaire->delete();
+
+        return response()->json([
+            'success' => 'Questionnaire deleted successfully!'
+        ], 200);
     }
 }

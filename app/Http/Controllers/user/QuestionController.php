@@ -3,47 +3,48 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use App\Models\Question;
+use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 
 class QuestionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Questionnaire $questionnaire)
     {
-        //
+        $questions = $questionnaire->questions;
+
+        return response()->json([
+            'data' => $questions
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, Questionnaire $questionnaire)
     {
-        //
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'number' => 'required|integer',
+            'numberOfAnswers' => 'required|integer'
+        ]);
+        $question = Question::create([
+            'content' => $validated['content'],
+            'number' => $validated['number'],
+            'numberOfAnswers' => $validated['numberOfAnswers'],
+            'questionnaire_id' => $questionnaire->id
+        ]);
+
+        return response()->json([
+            'success' => 'Question created successfully!',
+            'data' => $question
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy(Questionnaire $questionnaire, Question $question)
     {
-        //
-    }
+        abort_unless($question->questionnaire_id === $questionnaire->id, 404);
+        $question->delete();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'success' => 'Question deleted successfully!'
+        ], 200);
     }
 }

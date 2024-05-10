@@ -3,47 +3,63 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use App\Models\Answer;
+use App\Models\Question;
+use App\Models\Questionnaire;
 use Illuminate\Http\Request;
 
 class AnswerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Questionnaire $questionnaire, Question $question)
     {
-        //
+        abort_unless($question->questionnaire_id === $questionnaire->id, 404);
+        $answers = $question->answers;
+
+        return response([
+            'data' => $answers
+        ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request, Questionnaire $questionnaire, Question $question)
     {
-        //
+        abort_unless($question->questionnaire_id === $questionnaire->id, 404);
+        $validated = $request->validate([
+            'content' => 'required|string',
+            'value' => 'required|string'
+        ]);
+        $answer = $question->answers()->create([
+            'content' => $validated['content'],
+            'value' => $validated['value'],
+            'question_id' => $question->id
+        ]);
+
+        return response()->json([
+            'success' => 'Answer Created Successfully!',
+            'data' => $answer
+        ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function update(Request $request, Questionnaire $questionnaire, Question $question, Answer $answer)
     {
-        //
+        abort_unless($question->questionnaire_id === $questionnaire->id, 404);
+        $validated = $request->validate([
+            'content' => 'sometimes|string',
+            'value' => 'sometimes|string'
+        ]);
+        $answer = $question->answers()->update($validated);
+
+        return response()->json([
+            'success' => 'Answer Updated Successfully!'
+        ], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Questionnaire $questionnaire, Question $question, Answer $answer)
     {
-        //
-    }
+        abort_unless($question->questionnaire_id === $questionnaire->id, 404);
+        $answer->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json([
+            'success' => 'Answer deleted successfully!'
+        ], 200);
     }
 }

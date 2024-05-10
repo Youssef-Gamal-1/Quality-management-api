@@ -27,6 +27,7 @@ return new class extends Migration
             $table->boolean('SC')->default(0);
             $table->boolean('EC')->default(0);
             $table->boolean('QU')->default(0);
+            $table->boolean('ST')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -33,6 +33,14 @@ Route::middleware('auth:sanctum')->group(function() {
     // Course Degrees
     Route::apiResource('/programs/{program}/courses/{course}/degrees',\App\Http\Controllers\user\CourseDegreeController::class)
         ->only(['index','store','destroy']);
+    // Questionnaire routes
+    Route::apiResource('/questionnaires',\App\Http\Controllers\user\QuestionnaireController::class);
+    Route::post('/questionnaires/{questionnaire}/studentAnswers',\App\Http\Controllers\user\StudentAnswer::class);
+    Route::apiResource('/questionnaires/{questionnaire}/questions',\App\Http\Controllers\user\QuestionController::class)
+        ->only(['index','store','destroy']);
+    Route::apiResource('/questionnaires/{questionnaire}/questions/{question}/answers',
+        \App\Http\Controllers\user\AnswerController::class)
+        ->except('show');
     // user logout
     Route::post('/logout/{user}', [AuthController::class, 'logout']);
 });

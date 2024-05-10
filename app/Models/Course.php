@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
@@ -26,5 +27,10 @@ class Course extends Model
     public function forms(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Form::class);
+    }
+
+    public function questionnaires(): HasMany
+    {
+        return $this->hasMany(Questionnaire::class);
     }
 }

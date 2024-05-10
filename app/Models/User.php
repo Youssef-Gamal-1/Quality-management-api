@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'PC',
         'SC',
         'TS',
+        'ST'
     ];
 
     /**
@@ -65,27 +67,32 @@ class User extends Authenticatable
         });
     }
 
-    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function answers(): BelongsToMany
+    {
+        return $this->belongsToMany(Answer::class,'student_answers')
+            ->withPivot('questionnaire_id','question_id');
+    }
+    public function permissions(): BelongsToMany
     {
        return $this->belongsToMany(Permission::class,'user_file_permission')
            ->withPivot('standard_id','form_id');
     }
-    public function files(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function files(): BelongsToMany
     {
         return $this->belongsToMany(Form::class,'user_file_permission');
     }
 
-    public function standards(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function standards(): BelongsToMany
     {
         return $this->belongsToMany(Standard::class,'user_file_permission');
     }
 
-    public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function programs(): BelongsToMany
     {
         return $this->belongsToMany(Program::class,'program_user');
     }
 
-    public function courses(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function courses(): BelongsToMany
     {
         return $this->belongsToMany(Course::class,'course_user');
     }
@@ -95,7 +102,7 @@ class User extends Authenticatable
         return $this->hasOne(Standard::class);
     }
 
-    public function forms(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function forms(): BelongsToMany
     {
         return $this->belongsToMany(Form::class,'users_forms');
     }
