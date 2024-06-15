@@ -17,6 +17,12 @@ use Illuminate\Support\Facades\Storage;
 class FormController extends Controller
 {
 
+    public function index() {
+        $forms = Form::all();
+
+        return FormResource::collection($forms);
+    }
+
     public function store(StoreFormRequest $request, Program $program, Standard $standard, Indicator $indicator): FormResource|JsonResponse
     {
 
@@ -39,28 +45,15 @@ class FormController extends Controller
         }
     }
 
-    public function update(UpdateFormRequest $request, Program $program ,Standard $standard, Indicator $indicator, Form $form)
+    public function sendFeedback(Request $request, Form $form)
     {
-        try {
-            $this->validateStandard($program,$standard);
-            $validatedData = $request->validated();
-//            $path = null;
-//            if($request->hasFile('path'))
-//            {
-//                $file = $request->file('path');
-//                $path = $file->store('indicators', 'public');
-//            }
-//            $validatedData['path'] = $path;
-            $formTitle = $form->title;
-            $forms = Form::where('title',$formTitle)->get();
-            foreach($forms as $newForm){
-                $newForm->update($validatedData);
-            }
+        $validatedData = $request->validate([
+            'status' => 'sometimes|boolean'
+        ]);
 
-            return response()->json(['success' => 'Form updated successfully!'],200);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => 'The requested resource not found!']);
-        }
+        $form->update($validatedData);
+
+        return response()->json(['msg' => 'File status updated successfully']);
     }
 
     public function destroy( Program $program ,Standard $standard, Indicator $indicator, Form $form): \Illuminate\Http\JsonResponse

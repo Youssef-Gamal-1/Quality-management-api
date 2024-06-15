@@ -23,12 +23,12 @@ class QuestionController extends Controller
         $validated = $request->validate([
             'content' => 'required|string',
             'number' => 'required|integer',
-            'numberOfAnswers' => 'required|integer'
+            'category' => 'sometimes|string'
         ]);
         $question = Question::create([
             'content' => $validated['content'],
             'number' => $validated['number'],
-            'numberOfAnswers' => $validated['numberOfAnswers'],
+            'category' => $validated['category'],
             'questionnaire_id' => $questionnaire->id
         ]);
 
@@ -47,4 +47,5 @@ class QuestionController extends Controller
             'success' => 'Question deleted successfully!'
         ], 200);
     }
+
 }

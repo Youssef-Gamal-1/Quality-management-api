@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Question extends Model
 {
     use HasFactory;
-    protected $fillable = ['content','number','numberOfAnswers','questionnaire_id'];
+    protected $fillable = ['content','number','question','questionnaire_id'];
 
     public function questionnaire(): BelongsTo
     {

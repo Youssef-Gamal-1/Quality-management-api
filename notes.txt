@@ -1,0 +1,4 @@
+-- handle permissions so it will be specified actions
+-- report for questionnaires
+-- report for degrees
+-- course report and files

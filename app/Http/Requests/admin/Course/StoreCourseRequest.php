@@ -26,6 +26,7 @@ class StoreCourseRequest extends FormRequest
             'code' => 'required|string|max:255,unique:courses,code',
             'hours' => 'required|numeric|min:2|max:3',
             'programs' => 'array',
+            'type' => 'string|max:255',
             'users' => 'array'
         ];
     }

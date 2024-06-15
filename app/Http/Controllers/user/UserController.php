@@ -44,7 +44,6 @@ class UserController extends Controller
     {
         $this->authorize('authorizeUser', $user);
         $user = User::findOrFail($user->id);
-
         $role = [];
         $standards = [];
         $programId = null;
@@ -64,9 +63,6 @@ class UserController extends Controller
         }
         if ($user->TS === 1) {
             $role[] = 'Teaching Staff';
-            if(!isset($role['PC'])) {
-                $programId = $user->programs()->first()->id;
-            }
         }
 
         $user = [

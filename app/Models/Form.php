@@ -14,6 +14,7 @@ class Form extends Model
         'value',
         'indicator_id',
         'status',
+        'uploaded',
         'path',
         'type'
     ];
@@ -27,11 +28,6 @@ class Form extends Model
     public function indicator(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Indicator::class);
-    }
-
-    public function course(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Course::class);
     }
 
     public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany

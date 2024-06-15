@@ -31,8 +31,6 @@ Route::middleware(['auth:sanctum',\App\Http\Middleware\Admin::class])->group(fun
             Route::prefix('/indicators/{indicator}')->group(function(){
                 Route::post('/forms',[
                     \App\Http\Controllers\admin\FormController::class,'store']);
-                Route::put('/forms/{form}',[
-                    \App\Http\Controllers\admin\FormController::class,'update']);
                 Route::delete('/forms/{form}',[
                     \App\Http\Controllers\admin\FormController::class,'destroy']);
             });
@@ -45,6 +43,13 @@ Route::middleware(['auth:sanctum',\App\Http\Middleware\Admin::class])->group(fun
     Route::get('/courses',\App\Http\Controllers\admin\CoursesController::class);
     // Form download routes
     Route::get('/download/file/{id}', [\App\Http\Controllers\admin\FormController::class, 'download']);
+    // form feedback
+    Route::put('/forms/{form}',[
+        \App\Http\Controllers\admin\FormController::class,'sendFeedback']);
+    // form permissions
+    Route::get('/forms',[\App\Http\Controllers\admin\FormController::class,'index']);
+    // degree report
+    Route::get('/degreesReport',\App\Http\Controllers\admin\DegreesReportController::class);
 });
 
 

@@ -26,7 +26,11 @@ class CourseController extends Controller
         $validated = $request->validated();
 
         try {
-            $course = $program->courses()->create($validated);
+            if(isset($validated['type'])) {
+                $course = Course::create($validated);
+            } else {
+                $course = $program->courses()->create($validated);
+            }
             // Sync users
             if(isset($validated['users'])) {
                 $userIds = $validated['users'];
@@ -37,8 +41,10 @@ class CourseController extends Controller
                 }
             }
             // Sync programs
-            $programs = $validated['programs'] ?? [$program->id];
-            $course->programs()->sync($programs);
+            if(!isset($validated['type'])) {
+                $programs = $validated['programs'] ?? [$program->id];
+                $course->programs()->sync($programs);
+            }
 
             return new CourseResource($course);
         } catch (\Exception $exception) {

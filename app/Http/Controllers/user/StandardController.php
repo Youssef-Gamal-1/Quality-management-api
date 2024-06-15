@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Standard\StandardRequest;
 use App\Http\Resources\standard\StandardCollection;
 use App\Http\Resources\standard\StandardResource;
+use App\Models\Permission;
 use App\Models\Program;
 use App\Models\Standard;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StandardController extends Controller
@@ -42,6 +44,16 @@ class StandardController extends Controller
         }
 
         return new StandardResource(Standard::where('id',$standard->id)->first());
+    }
+
+    public function getStandards(Standard $standard)
+    {
+        $standard = $standard
+            ->select('title','id','program_id')
+            ->where('id',$standard->id)
+            ->get();
+
+        return response()->json(['data' => $standard]);
     }
 
 }

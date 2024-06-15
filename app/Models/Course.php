@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Course extends Model
 {
     use HasFactory;
-    protected $fillable = ['title','code','hours'];
+    protected $fillable = ['title','code','hours','type'];
     public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Program::class,'program_courses');
@@ -24,9 +24,9 @@ class Course extends Model
         return $this->hasMany(Degree::class);
     }
 
-    public function forms(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function files(): HasMany
     {
-        return $this->hasMany(Form::class);
+        return $this->hasMany(CourseFiles::class);
     }
 
     public function questionnaires(): HasMany

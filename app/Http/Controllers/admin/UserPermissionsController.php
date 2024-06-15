@@ -78,4 +78,10 @@ class UserPermissionsController extends Controller
         return $validated;
     }
 
+    public function getUserPermissions(User $user): \Illuminate\Http\JsonResponse
+    {
+        $permissions = $user->permissions()->get();
+
+        return response()->json($permissions, 200);
+    }
 }

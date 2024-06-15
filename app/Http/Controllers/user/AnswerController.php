@@ -38,7 +38,6 @@ class AnswerController extends Controller
             'data' => $answer
         ], 201);
     }
-
     public function update(Request $request, Questionnaire $questionnaire, Question $question, Answer $answer)
     {
         abort_unless($question->questionnaire_id === $questionnaire->id, 404);

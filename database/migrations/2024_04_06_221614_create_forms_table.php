@@ -13,12 +13,10 @@ return new class extends Migration
             $table->string('title');
             $table->text('value')->nullable()->default(null);
             $table->boolean('status')->default(false);
+            $table->boolean('uploaded')->default(false);
             $table->string('type'); // input[text,file,..], textarea, select
             $table->string('path')->nullable();
             $table->foreignIdFor(\App\Models\Indicator::class)->nullable()
-                ->constrained()
-                ->onDelete('cascade');
-            $table->foreignIdFor(\App\Models\Course::class)->nullable()
                 ->constrained()
                 ->onDelete('cascade');
             $table->timestamps();

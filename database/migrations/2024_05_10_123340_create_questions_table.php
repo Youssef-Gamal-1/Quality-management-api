@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('number');
             $table->string('content');
-            $table->integer('numberOfAnswers')->default(1);
+            $table->string('category')->nullable();
             $table->foreignIdFor(\App\Models\Questionnaire::class)->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
