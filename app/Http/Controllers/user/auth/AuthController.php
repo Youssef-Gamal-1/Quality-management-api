@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\admin\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -25,6 +26,12 @@ class AuthController extends Controller
             return response()->json([
                 'msg' => 'Invalid Credentials'
             ],422);
+        }
+
+        if (!Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'msg' => 'Invalid Credentials'
+            ], 422);
         }
 
         return response()->json([

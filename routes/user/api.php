@@ -34,6 +34,10 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/programs/{program}/courses',[\App\Http\Controllers\user\CourseController::class,'index']);
     // course Files routes
     Route::apiResource('/programs/{program}/courses/{course}/files',\App\Http\Controllers\user\CourseFilesController::class);
+    // download course report
+    Route::get('/programs/{program}/courses/{course}/download',[\App\Http\Controllers\user\CourseFilesController::class,'downloadReport']);
+    // download course file
+    Route::get('/programs/{program}/courses/{course}/files/{fileId}/download',[\App\Http\Controllers\user\CourseFilesController::class,'download']);
     // Course Degrees
     Route::apiResource('/programs/{program}/courses/{course}/degrees',\App\Http\Controllers\user\CourseDegreeController::class)
         ->only(['index','store','destroy']);
@@ -59,10 +63,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/standards/{standard}',[\App\Http\Controllers\user\StandardController::class,'getStandards']);
     // user forms
     Route::get('/forms/{form}',[\App\Http\Controllers\user\FormController::class,'getForms']);
+    Route::get('/latestForms',[\App\Http\Controllers\user\FormController::class,'latestForms']);
     // short route for uploading forms
     Route::post('/indicators/{indicator}/forms/{form}',[\App\Http\Controllers\user\FormController::class,'quickUpload']);
     // short route for updating forms
     Route::put('/indicators/{indicator}/forms/{form}',[\App\Http\Controllers\user\FormController::class,'quickUpdate']);
+    // college files
+    Route::apiResource('/collegeFiles',\App\Http\Controllers\CollegeFilesController::class);
+    Route::get('/collegeFiles/{file}/download',[\App\Http\Controllers\CollegeFilesController::class,'download']);
     // user logout
     Route::post('/logout/{user}', [AuthController::class, 'logout']);
 });

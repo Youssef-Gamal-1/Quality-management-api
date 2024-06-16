@@ -15,9 +15,19 @@ class FormController extends Controller
 {
     public function __construct()
     {
-        $this->authorizeResource(Form::class,'form');
+        $this->authorizeResource(Form::class, 'form');
     }
 
+    public function latestForms()
+    {
+        $forms = Form::where('type','file')
+            ->where('uploaded',true)
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        return response()->json(['data' => $forms]);
+    }
     public function update(Request $request, Program $program, Standard $standard, Indicator $indicator, Form $form)
     {
 //        $this->authorize('update',$form);
