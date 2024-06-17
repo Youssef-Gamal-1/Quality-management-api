@@ -38,7 +38,8 @@ class StoreRequest extends FormRequest
             'QU' => 'boolean',
             'EC' => 'boolean',
             'TS' => 'boolean',
-            'programs' => 'required_if:Ts,true'
+            'programs' => 'required_if:Ts,true',
+            'ST' => 'boolean'
         ];
     }
 }

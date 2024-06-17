@@ -11,6 +11,7 @@ class ProgramPolicy
     public function viewAny(User $user): bool
     {
         return $user->QM
+            || $user->TS
             || $user->PC
             || $user->SC
             || $user->EC;

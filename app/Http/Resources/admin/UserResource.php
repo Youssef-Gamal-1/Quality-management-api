@@ -33,11 +33,15 @@ class UserResource extends JsonResource
         }
 
         if ($this->QU === 1) {
-            $role[] = 'Questioner unit';
+            $role[] = 'Questioner';
         }
 
         if ($this->EC === 1) {
-            $role[] = 'Evaluation committee';
+            $role[] = 'Evaluator';
+        }
+
+        if ($this->ST === 1) {
+            $role[] = 'Student';
         }
 
         return [

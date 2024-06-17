@@ -50,6 +50,8 @@ Route::middleware(['auth:sanctum',\App\Http\Middleware\Admin::class])->group(fun
     Route::get('/forms',[\App\Http\Controllers\admin\FormController::class,'index']);
     // degree report
     Route::get('/degreesReport',\App\Http\Controllers\admin\DegreesReportController::class);
+    // user roles
+    Route::get('/userRoles',\App\Http\Controllers\admin\UserRolesController::class);
 });
 
 

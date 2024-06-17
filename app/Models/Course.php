@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Course extends Model
 {
     use HasFactory;
     protected $fillable = ['title','code','hours','type'];
+
     public function programs(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Program::class,'program_courses');
@@ -33,4 +36,5 @@ class Course extends Model
     {
         return $this->hasMany(Questionnaire::class);
     }
+
 }

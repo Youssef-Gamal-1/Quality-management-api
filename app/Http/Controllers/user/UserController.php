@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UpdateRequest;
 use App\Http\Resources\admin\UserCollection;
 use App\Http\Resources\admin\UserResource;
+use App\Models\Course;
 use App\Models\Standard;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,31 +46,29 @@ class UserController extends Controller
         $this->authorize('authorizeUser', $user);
         $user = User::findOrFail($user->id);
         $role = [];
-        $standards = [];
+        $courses = [];
         $programId = null;
 
         if ($user->QM === 1) {
             $role[] = 'Quality manager';
         }
         if ($user->SC === 1) {
-            $role[] = 'Standard Coordinator';
-            $standards[] = Standard::where('user_id',$user->id)->first()->id;
-        } else {
-            $standards = $user->permissions()->whereNotNull('standard_id')->pluck('standard_id');
+            $role[] = 'Standard coordinator';
         }
         if ($user->PC === 1) {
-            $role[] = 'Program Coordinator';
+            $role[] = 'Program coordinator';
             $programId = $user->programs()->first()->id;
         }
         if ($user->TS === 1) {
-            $role[] = 'Teaching Staff';
+            $role[] = 'Teaching staff';
+            $courses = $user->courses()->pluck('id');
         }
 
         $user = [
             'id' => $user->id,
             'name' => $user->name,
             'role' => $role,
-            'standards' => $standards,
+            'courses' => $courses,
             'programId' => $programId,
         ];
 

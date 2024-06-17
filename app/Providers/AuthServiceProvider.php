@@ -3,11 +3,13 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\Course;
 use App\Models\Form;
 use App\Models\Indicator;
 use App\Models\Program;
 use App\Models\Standard;
 use App\Models\User;
+use App\Policies\CoursePolicy;
 use App\Policies\FormPolicy;
 use App\Policies\IndicatorPolicy;
 use App\Policies\ProgramPolicy;
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Program::class => ProgramPolicy::class,
         Indicator::class => IndicatorPolicy::class,
         Form::class  => FormPolicy::class,
+        Course::class => CoursePolicy::class
     ];
 
     /**

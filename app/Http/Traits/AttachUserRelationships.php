@@ -36,7 +36,7 @@ trait AttachUserRelationships
     {
         $programs = $this->validateTeachingStaffPrograms($data);
         if (!empty($programs)) {
-            $user->programs()->sync($programs);
+            $user->courses()->sync($programs);
         }
     }
     public function validateStandardCoordinator(array $data)
