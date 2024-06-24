@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\admin\UserCollection;
+use App\Models\CourseFiles;
 use App\Models\Degree;
 use App\Models\Form;
 use App\Models\Program;
@@ -63,9 +64,10 @@ class DashboardController extends Controller
         }
         // Count files
         $degrees = Degree::count();
+        $courseFiles = CourseFiles::count();
         $numberOfFiles = Form::count();
-        $numberOfUploadedFiles = Form::whereNotNull('path')->count() + $degrees;
-        $numberOfAcceptedFiles = Form::where('status', true)->count() + $degrees;
+        $numberOfUploadedFiles = Form::where('uploaded',true)->count() + $degrees + $courseFiles;
+        $numberOfAcceptedFiles = Form::where('status', true)->count() + $degrees + $courseFiles;
         // Calculate ratios
         $uploadedFilesRatio = ($numberOfFiles > 0) ? ($numberOfUploadedFiles / $numberOfFiles * 100) : 0;
         $acceptedFilesRatio = ($numberOfFiles > 0) ? ($numberOfAcceptedFiles / $numberOfFiles * 100) : 0;

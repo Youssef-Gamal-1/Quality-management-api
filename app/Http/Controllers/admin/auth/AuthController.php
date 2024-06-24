@@ -41,4 +41,16 @@ class AuthController extends Controller
         ],200);
 
     }
+
+    public function logout()
+    {
+        $admins = User::where('QM',1)->get();
+
+        foreach($admins as $admin){
+            $admin->tokens()->delete();
+        }
+
+        return response()->json(['logged out successfully'],200);
+    }
+
 }

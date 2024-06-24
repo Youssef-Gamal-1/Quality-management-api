@@ -24,12 +24,10 @@ class AnswerController extends Controller
     {
         abort_unless($question->questionnaire_id === $questionnaire->id, 404);
         $validated = $request->validate([
-            'content' => 'required|string',
-            'value' => 'required|string'
+            'content' => 'required|string'
         ]);
         $answer = $question->answers()->create([
             'content' => $validated['content'],
-            'value' => $validated['value'],
             'question_id' => $question->id
         ]);
 
@@ -42,8 +40,7 @@ class AnswerController extends Controller
     {
         abort_unless($question->questionnaire_id === $questionnaire->id, 404);
         $validated = $request->validate([
-            'content' => 'sometimes|string',
-            'value' => 'sometimes|string'
+            'content' => 'sometimes|string'
         ]);
         $answer = $question->answers()->update($validated);
 

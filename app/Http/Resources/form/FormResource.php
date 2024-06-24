@@ -20,6 +20,7 @@ class FormResource extends JsonResource
             'value' => $this->value,
             'type' => $this->type,
             'status' => $this->status,
+            'uploaded' => $this->uploaded
         ];
     }
 }

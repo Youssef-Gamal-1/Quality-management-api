@@ -18,6 +18,7 @@ class IndicatorPolicy
     public function viewAny(User $user): bool
     {
         return $user->QM
+                || $user->EC
             || ($user->programs()->where('id',$this->program->id)->exists() && $user->PC === 1)
             || $this->standard->user_id === $user->id
             || $this->standard->permissions()->where('user_id',$user->id)->exists();
@@ -25,6 +26,7 @@ class IndicatorPolicy
     public function view(User $user, Indicator $indicator): bool
     {
         return $user->QM
+                || $user->EC
             || ($user->programs()->where('id',$this->program->id)->exists() && $user->PC === 1)
             || $this->standard->user_id === $user->id
             || $this->standard->permissions()->where('user_id',$user->id)->exists();

@@ -20,7 +20,8 @@ class ProgramPolicy
     {
         return $user->QM
             || $user->programs()->where('id',$program->id)->exists()
-            || $user->standard()->where('user_id',$user->id)->exists();
+            || $user->standard()->where('user_id',$user->id)->exists()
+            || $user->EC;
     }
 
     public function update(User $user, Program $program): bool

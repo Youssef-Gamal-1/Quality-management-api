@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\user;
 
 use App\Http\Controllers\Controller;
+use App\Models\Answer;
 use App\Models\Questionnaire;
 use App\Models\StudentAnswer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class QuestionnaireController extends Controller
@@ -73,30 +75,40 @@ class QuestionnaireController extends Controller
             ->where('category', 'Teacher')
             ->whereHas('answers', function ($query) {
                 $query->where('content', 'Agree')
-                    ->orWhere('content', 'Strongly agree');
+                    ->orWhere('content', 'Strongly agree')
+                    ->whereHas('students',function($query){
+                        $query->distinct('user_id');
+                    });
+
             })
             ->count();
 
         $numberOfAgreeStudentsOnDeliverableGoals = $questionnaire->questions()
-            ->where('category', 'Deliverable goals')
+            ->where('category', 'Education Outcomes Stage')
             ->whereHas('answers', function ($query) {
                 $query->where('content', 'Agree')
-                    ->orWhere('content', 'Strongly agree');
+                    ->orWhere('content', 'Strongly agree')
+                    ->whereHas('students',function($query){
+                    $query->distinct('user_id');
+                });
             })
             ->count();
 
         $numberOfAgreeStudentsOnCourseContent = $questionnaire->questions()
-            ->where('category', 'Course content')
+            ->where('category', 'Syllabus and book')
             ->whereHas('answers', function ($query) {
                 $query->where('content', 'Agree')
-                    ->orWhere('content', 'Strongly agree');
+                    ->orWhere('content', 'Strongly agree')
+                    ->whereHas('students',function($query){
+                        $query->distinct('user_id');
+                    });
             })
             ->count();
 
         // Calculate ratios
-        $ratioOfAgreeStudentsOnEducator = $numberOfStudents ? $numberOfAgreeStudentsOnEducator / $numberOfStudents : 0;
-        $ratioOfAgreeStudentsOnDeliverableGoals = $numberOfStudents ? $numberOfAgreeStudentsOnDeliverableGoals / $numberOfStudents : 0;
-        $ratioOfAgreeStudentsOnCourseContent = $numberOfStudents ? $numberOfAgreeStudentsOnCourseContent / $numberOfStudents : 0;
+        $ratioOfAgreeStudentsOnEducator = $numberOfStudents ? $numberOfAgreeStudentsOnEducator * $numberOfStudents : 0;
+        $ratioOfAgreeStudentsOnDeliverableGoals = $numberOfStudents ? $numberOfAgreeStudentsOnDeliverableGoals * $numberOfStudents : 0;
+        $ratioOfAgreeStudentsOnCourseContent = $numberOfStudents ? $numberOfAgreeStudentsOnCourseContent * $numberOfStudents : 0;
 
         return [
             'numberOfStudents' => $numberOfStudents,

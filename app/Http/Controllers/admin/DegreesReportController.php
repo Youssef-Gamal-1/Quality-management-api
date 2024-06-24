@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 
 class DegreesReportController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Course $course)
     {
         $ratios = [];
 
         for ($i = 2019; $i <= 2024; $i++) {
-            $degrees = Degree::where('year', $i)->pluck('success_ratio');
-            $sum = $degrees->sum(); 
+            $degrees = $course->degrees()->where('year', $i)->pluck('success_ratio');
+            $sum = $degrees->sum();
             $count = $degrees->count();
             $average = $count > 0 ? $sum / $count : 0;
             $ratios[$i] = $average;

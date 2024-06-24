@@ -25,7 +25,7 @@ class UserController extends Controller
             'search',
             'role'
         ]);
-        $users = User::latest()->filter($filters)->paginate();
+        $users = User::latest()->filter($filters)->paginate(40);
 
         return new UserCollection($users);
     }

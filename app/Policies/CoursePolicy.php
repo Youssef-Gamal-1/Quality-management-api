@@ -37,7 +37,7 @@ class CoursePolicy
     }
 
 
-    public function delete(User $user, Course $course): bool
+    public function delete(User $user): bool
     {
         return $user->QM
             || $user->PC;

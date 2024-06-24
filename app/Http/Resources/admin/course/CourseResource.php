@@ -21,7 +21,8 @@ class CourseResource extends JsonResource
             'title' => $this->title,
             'code' => $this->code,
             'hours' => $this->hours,
-            'doctor' => $teachers
+            'doctor' => $teachers,
+            'programs' => $this->programs
         ];
     }
 }

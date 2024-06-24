@@ -59,6 +59,9 @@ class UserController extends Controller
             $role[] = 'Program coordinator';
             $programId = $user->programs()->first()->id;
         }
+        if($user->EC === 1) {
+            $role[] = 'Evaluator';
+        }
         if ($user->TS === 1) {
             $role[] = 'Teaching staff';
             $courses = $user->courses()->pluck('id');

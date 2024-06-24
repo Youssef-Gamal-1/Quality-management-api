@@ -16,22 +16,18 @@ class Standard extends Model
     // It will help in generating reports
     function getStandardInfo(): array|int
     {
-        $numberOfIndicators = $this->indicators()->count();
-        if($numberOfIndicators === 0){
-            return 0;
-        }
         $standardIndicators = $this->indicators()->get();
 
         $standardIndicatorsFinished = 0;
         $indicatorsFinishedRatio = [];
         $numberOfFiles = 0;
-        $latestFiles = [];
+//        $latestFiles = [];
         foreach($standardIndicators as $indicator){
             $indicatorsFinishedRatio[$indicator->id] = $indicator->getFinishedReportsRatio();
-            $standardIndicatorsFinished += $indicatorsFinishedRatio[$indicator->id];
+            $standardIndicatorsFinished += $indicator->forms()->where('status',true)->count();
             $numberOfFiles += $indicator->forms()->count();
         }
-        $standardRatio = $standardIndicatorsFinished / $numberOfIndicators;
+        $standardRatio = $standardIndicatorsFinished / $numberOfFiles * 100;
         $standardCoordinator = $this->user->name ?? 'Not associated yet!';
         return [
             'id' => $this->id,
@@ -65,5 +61,10 @@ class Standard extends Model
     public function indicators(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Indicator::class);
+    }
+
+    public function evaluation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(EvaluationFiles::class);
     }
 }

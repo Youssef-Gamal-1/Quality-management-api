@@ -48,10 +48,11 @@ Route::middleware(['auth:sanctum',\App\Http\Middleware\Admin::class])->group(fun
         \App\Http\Controllers\admin\FormController::class,'sendFeedback']);
     // form permissions
     Route::get('/forms',[\App\Http\Controllers\admin\FormController::class,'index']);
-    // degree report
-    Route::get('/degreesReport',\App\Http\Controllers\admin\DegreesReportController::class);
     // user roles
     Route::get('/userRoles',\App\Http\Controllers\admin\UserRolesController::class);
+    // evaluation routes
+    Route::get('/standards/{standard}/downloadEvaluation',[\App\Http\Controllers\EvaluationFilesController::class,'download']);
+    Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 });
 
 

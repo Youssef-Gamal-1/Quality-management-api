@@ -31,7 +31,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/programs/{program}/standards/{standard}/indicators/{indicator}/forms/{form}',
         [\App\Http\Controllers\user\FormController::class,'uploadFile']);
     // courses route
-    Route::get('/programs/{program}/courses',[\App\Http\Controllers\user\CourseController::class,'index']);
+    Route::apiResource('/programs/{program}/courses',\App\Http\Controllers\user\CourseController::class);
+    // degree report
+    Route::get('/courses/{course}/degreesReport',\App\Http\Controllers\admin\DegreesReportController::class);
     // course Files routes
     Route::apiResource('/programs/{program}/courses/{course}/files',\App\Http\Controllers\user\CourseFilesController::class);
     // download course report
@@ -57,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function() {
     // Invokable class to get all courses of the system
     Route::get('/courses',\App\Http\Controllers\admin\CoursesController::class);
     Route::get('/generalCourses',[\App\Http\Controllers\user\CourseController::class,'getGeneralCourses']);
+    Route::delete('/generalCourses/{id}',[\App\Http\Controllers\user\CourseController::class,'destroy']);
     // Questionnaire report
     Route::get('/questionnaires/{questionnaire}/report',[\App\Http\Controllers\user\QuestionnaireController::class,'getReport']);
     // user standard
@@ -71,6 +74,8 @@ Route::middleware('auth:sanctum')->group(function() {
     // college files
     Route::apiResource('/collegeFiles',\App\Http\Controllers\CollegeFilesController::class);
     Route::get('/collegeFiles/{file}/download',[\App\Http\Controllers\CollegeFilesController::class,'download']);
+    // evaluation files
+    Route::post('/standards/{standard}/evaluations',[\App\Http\Controllers\EvaluationFilesController::class,'upload']);
     // user logout
     Route::post('/logout/{user}', [AuthController::class, 'logout']);
 });

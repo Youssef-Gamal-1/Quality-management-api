@@ -21,38 +21,6 @@ class CourseController extends Controller
         return new CourseCollection($program->courses);
     }
 
-    public function store(StoreCourseRequest $request, Program $program)
-    {
-        $validated = $request->validated();
-
-        try {
-            if(isset($validated['type'])) {
-                $course = Course::create($validated);
-            } else {
-                $course = $program->courses()->create($validated);
-            }
-            // Sync users
-            if(isset($validated['users'])) {
-                $userIds = $validated['users'];
-                $users = User::whereIn('id', $userIds)->get();
-                foreach($users as $user) {
-                    $user->update(['TS' => true]);
-                    $user->courses()->syncWithoutDetaching([$course->id]);
-                }
-            }
-            // Sync programs
-            if(!isset($validated['type'])) {
-                $programs = $validated['programs'] ?? [$program->id];
-                $course->programs()->sync($programs);
-            }
-
-            return new CourseResource($course);
-        } catch (\Exception $exception) {
-            return response()->json(['error' => 'Failed to store course.'], 500);
-        }
-    }
-
-
     public function show(Program $program, Course $course)
     {
         try {
