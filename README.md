@@ -86,13 +86,6 @@ This is the backend API for a full-stack Quality Management System (QMS) develop
 
 ---
 
-## 👨‍💻 Related Project
-
-The frontend interface for this system is available here:
-🔗 [Quality-GUI Repo](https://github.com/Youssef-Gamal-1/Quality-GUI)
-
----
-
 ## 📃 License
 
 This project is for **educational use only** and may be reused with attribution.
